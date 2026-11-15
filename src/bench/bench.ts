@@ -404,6 +404,8 @@ export function createBench(stageIn: Stage, uiHost: HTMLElement, opts: BenchOpti
     const dirs: Record<string, Dir> = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' };
     const volt = armed?.part.kind === 'voltmeter';
     if (dirs[e.key]) {
+      // mouse and touch users steer the camera with the arrow keys; the edge cursor is for keyboard-only building (focus arrived by Tab)
+      if (!canvas.matches(':focus-visible')) return;
       e.preventDefault();
       showCursor = true;
       if (volt) { postCursor = postCursor === null ? 0 : stepPost(grid, postCursor, dirs[e.key]); announce(`Post ${postName(grid, postCursor)}.`); }

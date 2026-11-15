@@ -70,7 +70,8 @@ export function mount(host: LabHost): { dispose(): void } {
   row.append(clear);
   sCard.append(row);
   const tip = el('p', '', 'Pick a part in the tray, then tap a gap between two posts. Tap a part to change or remove it. Tap a part to see its readings at the top.');
-  sCard.append(tip);
+  const keys = el('p', '', 'Move around: W A S D or the arrow keys. Turn: Q and E. Zoom: R and F, or scroll. Drag to orbit.');
+  sCard.append(tip, keys);
 
   host.side.append(dCard, sCard);
   load(starters['One globe']());

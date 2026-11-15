@@ -188,6 +188,23 @@ export function createStage(container: HTMLElement, quality: QualityTier, opts: 
   canvas.addEventListener('wheel', onWheel, { passive: false });
   canvas.addEventListener('contextmenu', onContext);
 
+  // keyboard free view: W A S D or the arrow keys glide over the scene, Q / E turn, R / F (or + / −) zoom
+  const held = new Set<string>();
+  const MOVE_KEYS = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'KeyR', 'KeyF', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Equal', 'Minus', 'NumpadAdd', 'NumpadSubtract']);
+  const typing = (t: EventTarget | null): boolean => { const el = t as HTMLElement | null; return !!el && !!el.closest && !!el.closest('input, textarea, select, [contenteditable="true"]'); };
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (!MOVE_KEYS.has(e.code) || e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented || locked || !onScreen) return;
+    if (typing(e.target)) return;
+    // arrow keys only steer the camera when focus is on the page or inside the 3D view, so they still scroll panels and move between tabs
+    if (e.code.startsWith('Arrow')) { const t = e.target; if (t instanceof HTMLElement && t !== document.body && t !== document.documentElement && !container.contains(t)) return; e.preventDefault(); }
+    held.add(e.code);
+  };
+  const onKeyUp = (e: KeyboardEvent) => { held.delete(e.code); };
+  const onBlur = () => held.clear();
+  window.addEventListener('keydown', onKeyDown);
+  window.addEventListener('keyup', onKeyUp);
+  window.addEventListener('blur', onBlur);
+
   // resize & visibility
   const resizeCbs = new Set<(w: number, h: number) => void>();
   let W = 1, H = 1;
@@ -244,6 +261,21 @@ export function createStage(container: HTMLElement, quality: QualityTier, opts: 
     last = now;
     if (lost || document.hidden || !onScreen) return;
     // camera
+    if (held.size && !locked) {
+      const ax = (held.has('KeyD') || held.has('ArrowRight') ? 1 : 0) - (held.has('KeyA') || held.has('ArrowLeft') ? 1 : 0);
+      const az = (held.has('KeyW') || held.has('ArrowUp') ? 1 : 0) - (held.has('KeyS') || held.has('ArrowDown') ? 1 : 0);
+      const turn = (held.has('KeyE') ? 1 : 0) - (held.has('KeyQ') ? 1 : 0);
+      const zoom = (held.has('KeyF') || held.has('Minus') || held.has('NumpadSubtract') ? 1 : 0) - (held.has('KeyR') || held.has('Equal') || held.has('NumpadAdd') ? 1 : 0);
+      if (ax || az || turn || zoom) {
+        const sp = goal.distance * 0.75 * dt;
+        goal.target.x += (Math.cos(goal.yaw) * ax - Math.sin(goal.yaw) * az) * sp;
+        goal.target.z += (-Math.sin(goal.yaw) * ax - Math.cos(goal.yaw) * az) * sp;
+        goal.yaw += turn * 1.3 * dt;
+        goal.distance *= Math.exp(zoom * 1.1 * dt);
+        userMoved = true; tween = null;
+        clampGoal();
+      }
+    }
     if (tween) {
       tween.t += dt;
       const k = ease(Math.min(1, tween.t / tween.dur));
@@ -331,6 +363,7 @@ export function createStage(container: HTMLElement, quality: QualityTier, opts: 
       canvas.removeEventListener('pointercancel', onUp);
       canvas.removeEventListener('wheel', onWheel);
       canvas.removeEventListener('contextmenu', onContext);
+      window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp); window.removeEventListener('blur', onBlur);
       canvas.removeEventListener('webglcontextlost', onLost);
       canvas.removeEventListener('webglcontextrestored', onRestored);
       key.shadow.map?.dispose();

@@ -12,7 +12,7 @@ const PHASES: { id: Phase; label: string }[] = [
   { id: 'checks', label: 'Checks' },
 ];
 
-const FREE_PROMPT = 'Free play. Build, change and test anything you like. When you are ready, open <b>Checks</b> to earn your ticket.';
+const FREE_PROMPT = 'Free play. Build, change and test anything you like. Move around with <b>W A S D</b> or the arrow keys, turn with <b>Q</b> and <b>E</b>, zoom with <b>R</b> and <b>F</b>. When you are ready, open <b>Checks</b> to earn your ticket.';
 
 function phaseHash(id: string, p: Phase): string {
   return p === 'guided' ? `#${id}` : `#${id}/${p}`;
