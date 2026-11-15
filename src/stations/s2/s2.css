@@ -1,0 +1,20 @@
+/* Station 2: Build and draw */
+.s2-card { margin-bottom: 12px; }
+.s2-card h3 { font-size: 1rem; margin-bottom: 8px; }
+.s2-card > p { margin: 8px 0 0; font-size: .88rem; color: var(--lw-muted); }
+.s2-diagram, .s2-draw { --lw-diagram-bg: var(--lw-panel2); --lw-diagram-ink: var(--lw-ink); display: grid; place-items: center; }
+.s2-diagram .lw-diagram { max-width: 460px; }
+.s2-draw .lw-diagram { max-width: 340px; }
+.s2-draw .lw-dg-picker-bg { fill: var(--lw-panel); }
+.s2-draw-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center; }
+.s2-draw-row .s2-count { color: var(--lw-muted); font-size: .88rem; margin-left: auto; }
+.s2-key { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; margin: 0; padding: 0; list-style: none; }
+.s2-key li { display: grid; grid-template-columns: 54px 1fr; align-items: center; gap: 8px; min-height: 36px; font-size: .88rem; line-height: 1.2; }
+.s2-key li > span:first-child { color: var(--lw-ink); line-height: 0; display: grid; place-items: center; }
+.s2-key small { display: block; color: var(--lw-muted); font-size: .78rem; }
+/* prompts in the checks panel */
+.s2-sym { display: inline-grid; place-items: center; margin: 4px 0 2px; padding: 10px 18px; border: 1px solid var(--lw-line); border-radius: 10px; background: var(--lw-panel); color: var(--lw-ink); line-height: 0; }
+.s2-sym svg { width: 120px; height: auto; }
+.s2-target { margin: 10px 0 2px; padding: 8px; border: 1px solid var(--lw-line); border-radius: 10px; background: var(--lw-panel); max-width: 300px; --lw-diagram-bg: var(--lw-panel); --lw-diagram-ink: var(--lw-ink); line-height: 0; }
+.s2-target svg { width: 100%; height: auto; display: block; }
+.s2-target-cap { display: block; font-size: .8rem; line-height: 1.2; color: var(--lw-muted); margin-bottom: 4px; }
