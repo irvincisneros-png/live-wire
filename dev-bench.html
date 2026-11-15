@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Live Wire · bench test page</title>
+  <link rel="icon" href="./favicon.svg" />
+  <style>
+    html, body { margin: 0; height: 100%; background: #0d0b0a; color: #f1f2f6; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+    #view { position: fixed; inset: 0; }
+    #dev { position: fixed; right: 64px; top: 10px; display: flex; gap: 6px; z-index: 10; }
+    #dev button { min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,.14); background: rgba(22,24,31,.86); color: inherit; font: inherit; font-weight: 650; cursor: pointer; }
+    #dev button[aria-pressed="true"] { border-color: #56B4E9; background: rgba(86,180,233,.25); }
+    #diagram { position: fixed; right: 10px; bottom: 96px; width: 260px; padding: 8px; border-radius: 12px; background: #fbfaf6; color: #1c1e26; z-index: 4; box-shadow: 0 8px 24px rgba(0,0,0,.4); --lw-diagram-bg: #fbfaf6; }
+    #diagram[hidden] { display: none; }
+    @media (max-width: 700px) { #diagram { display: none; } #dev { right: 62px; } }
+  </style>
+</head>
+<body>
+  <div id="view"></div>
+  <div id="dev">
+    <button id="xray" type="button" aria-pressed="false">X-ray</button>
+    <button id="dg" type="button" aria-pressed="true">Diagram</button>
+  </div>
+  <div id="diagram"></div>
+  <script type="module" src="/src/dev-bench.ts"></script>
+</body>
+</html>

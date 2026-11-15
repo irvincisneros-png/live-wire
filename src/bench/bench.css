@@ -1,0 +1,130 @@
+/* Live Wire bench UI. Themeable through --lw-* variables (fallbacks give a dark chrome over the 3D view). */
+.lw-bench {
+  position: absolute; inset: 0; pointer-events: none; z-index: 5;
+  font: 14px/1.35 var(--lw-font, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+  color: var(--lw-ink-inv, #f1f2f6);
+  --_panel: var(--lw-panel, rgba(22, 24, 31, 0.86));
+  --_line: var(--lw-line, rgba(255, 255, 255, 0.12));
+  --_accent: var(--lw-accent, #56B4E9);
+}
+.lw-bench > * { pointer-events: auto; }
+.lw-bench .lw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; pointer-events: none; }
+
+.lw-bench .lw-btn {
+  min-height: 40px; min-width: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--_line);
+  background: var(--lw-btn, rgba(255, 255, 255, 0.08)); color: inherit; font: inherit; font-weight: 650; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.08s;
+}
+.lw-bench .lw-btn:hover { background: var(--lw-btn-hover, rgba(255, 255, 255, 0.16)); }
+.lw-bench .lw-btn:active { transform: scale(0.97); }
+.lw-bench .lw-btn:disabled { opacity: 0.4; cursor: default; }
+.lw-bench .lw-btn:focus-visible, .lw-bench .lw-tray-item:focus-visible, .lw-bench summary:focus-visible, .lw-bench .lw-viewbtn:focus-visible { outline: 3px solid var(--_accent); outline-offset: 2px; }
+.lw-bench .lw-btn-small { min-height: 40px; padding: 0 11px; font-size: 13px; }
+.lw-bench .lw-btn-danger { color: var(--lw-danger-ink, #ffb4a8); border-color: rgba(255, 120, 100, 0.35); }
+
+/* tray */
+.lw-bench .lw-tray {
+  position: absolute; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%);
+  max-width: calc(100% - 20px); background: var(--_panel); border: 1px solid var(--_line); border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior: contain;
+}
+.lw-bench .lw-tray::-webkit-scrollbar { display: none; }
+.lw-bench .lw-tray-inner { display: flex; gap: 6px; padding: 7px; width: max-content; }
+.lw-bench .lw-tray-item {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-width: 70px; min-height: 64px; padding: 6px 8px 5px; border-radius: 11px; border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.05); color: inherit; font: inherit; cursor: grab; touch-action: pan-x; user-select: none; -webkit-user-select: none;
+}
+.lw-bench .lw-tray-item:hover { background: rgba(255, 255, 255, 0.11); }
+.lw-bench .lw-tray-item[aria-pressed="true"] { background: color-mix(in srgb, var(--_accent) 26%, transparent); border-color: var(--_accent); box-shadow: 0 0 0 1px var(--_accent) inset; }
+.lw-bench .lw-tray-item:disabled { opacity: 0.38; cursor: default; }
+.lw-bench .lw-tray-icon { color: var(--lw-ink-inv, #f1f2f6); line-height: 0; }
+.lw-bench .lw-tray-label { font-size: 12px; font-weight: 650; white-space: nowrap; }
+.lw-bench .lw-tray-count {
+  position: absolute; top: 4px; right: 5px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+  background: rgba(255, 255, 255, 0.16); font-size: 11px; font-weight: 750; line-height: 18px; text-align: center;
+}
+.lw-tray-ghost {
+  position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; padding: 6px 8px; border-radius: 10px;
+  background: var(--lw-panel, rgba(22, 24, 31, 0.9)); color: var(--lw-ink-inv, #f1f2f6); border: 1px solid var(--lw-accent, #56B4E9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); line-height: 0;
+}
+
+/* warning chips */
+.lw-bench .lw-chips { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: calc(100% - 120px); pointer-events: none; }
+.lw-bench .lw-chip {
+  pointer-events: auto; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 999px;
+  background: var(--_panel); border: 1px solid var(--_line); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); font-size: 13.5px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); animation: lw-chip-in 0.25s ease-out;
+}
+.lw-bench .lw-chip-short { border-color: rgba(213, 94, 0, 0.8); background: color-mix(in srgb, #D55E00 30%, var(--_panel)); }
+.lw-bench .lw-chip-trip { border-color: rgba(230, 70, 50, 0.9); background: color-mix(in srgb, #c0251c 32%, var(--_panel)); border-radius: 14px; }
+.lw-bench .lw-chip-warn { border-color: rgba(240, 228, 66, 0.7); }
+.lw-bench .lw-chip-flag { width: 12px; height: 12px; border-radius: 3px; background: #ff3a20; box-shadow: 0 0 10px #ff3a20; flex: none; }
+@keyframes lw-chip-in { from { opacity: 0; transform: translateY(-6px); } }
+
+/* popover */
+.lw-bench .lw-pop {
+  position: absolute; left: 0; top: 0; width: min(270px, calc(100% - 20px)); padding: 10px 12px 12px; border-radius: 14px;
+  background: var(--_panel); border: 1px solid var(--_line); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 3;
+}
+.lw-bench .lw-pop[hidden] { display: none; }
+.lw-bench .lw-pop-title { display: flex; align-items: center; justify-content: space-between; font-weight: 750; font-size: 15px; }
+.lw-bench .lw-pop-close { width: 40px; height: 40px; margin: -8px -8px -8px 0; border: 0; background: none; color: inherit; font-size: 22px; cursor: pointer; border-radius: 10px; }
+.lw-bench .lw-pop-close:hover { background: rgba(255, 255, 255, 0.1); }
+.lw-bench .lw-pop-info { margin: 2px 0 8px; font-size: 13px; opacity: 0.82; }
+.lw-bench .lw-pop-note { font-size: 12.5px; opacity: 0.7; margin-bottom: 6px; }
+.lw-bench .lw-pop-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.lw-bench .lw-stepper { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.lw-bench .lw-stepper-val { flex: 1; text-align: center; font-weight: 750; font-variant-numeric: tabular-nums; }
+.lw-bench .lw-slider { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; font-weight: 700; }
+.lw-bench .lw-slider input { width: 100%; min-height: 40px; accent-color: var(--lw-voltage, #F0E442); }
+.lw-bench .q-resistance { color: var(--lw-q-resistance, #e3a3c8); }
+.lw-bench .q-voltage { color: var(--lw-q-voltage, #F0E442); }
+
+/* parts list */
+.lw-bench .lw-partslist {
+  position: absolute; top: 10px; left: 10px; max-width: min(340px, calc(100% - 20px)); max-height: calc(100% - 120px); overflow: auto;
+  background: var(--_panel); border: 1px solid var(--_line); border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.lw-bench .lw-partslist summary { cursor: pointer; padding: 0 14px; min-height: 40px; display: flex; align-items: center; font-weight: 700; font-size: 13px; list-style: none; }
+.lw-bench .lw-partslist summary::-webkit-details-marker { display: none; }
+.lw-bench .lw-partslist summary::before { content: '▸'; margin-right: 8px; transition: transform 0.15s; }
+.lw-bench .lw-partslist[open] summary::before { transform: rotate(90deg); }
+.lw-bench .lw-partslist ul { list-style: none; margin: 0; padding: 0 8px 8px; }
+.lw-bench .lw-partslist li { padding: 8px 6px; border-top: 1px solid var(--_line); }
+.lw-bench .lw-partslist li.is-selected { background: color-mix(in srgb, var(--_accent) 14%, transparent); border-radius: 8px; }
+.lw-bench .lw-pl-text span { opacity: 0.7; font-size: 12.5px; }
+.lw-bench .lw-pl-text small { opacity: 0.78; }
+.lw-bench .lw-pl-btns { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.lw-bench .lw-pl-empty { opacity: 0.7; font-size: 13px; }
+
+.lw-bench .lw-viewbtn {
+  position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--_line);
+  background: var(--_panel); color: inherit; display: grid; place-items: center; cursor: pointer;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.lw-bench .lw-viewbtn:hover { background: rgba(40, 44, 56, 0.95); }
+
+.lw-stage-canvas:focus-visible { outline: 3px solid var(--lw-accent, #56B4E9); outline-offset: -3px; }
+
+/* diagram */
+.lw-diagram { display: block; width: 100%; height: auto; max-width: 520px; color: var(--lw-diagram-ink, currentColor); }
+.lw-diagram text { stroke: none; }
+.lw-diagram-editor .lw-dg-hit { fill: transparent; stroke: none; cursor: pointer; outline: none; }
+.lw-diagram-editor .lw-dg-hit:hover, .lw-diagram-editor .lw-dg-hit:focus { fill: color-mix(in srgb, var(--lw-accent, #56B4E9) 18%, transparent); stroke: var(--lw-accent, #56B4E9); stroke-width: 1.5; }
+.lw-diagram-editor .lw-dg-picker-bg { fill: var(--lw-panel, #1c1e26); stroke: var(--lw-line, rgba(127, 127, 127, 0.4)); filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3)); }
+.lw-diagram-editor .lw-dg-choice { cursor: pointer; color: var(--lw-ink-inv, #f1f2f6); outline: none; }
+.lw-diagram-editor .lw-dg-choice rect { fill: rgba(255, 255, 255, 0.07); stroke: transparent; }
+.lw-diagram-editor .lw-dg-choice:hover rect, .lw-diagram-editor .lw-dg-choice:focus rect { fill: color-mix(in srgb, var(--lw-accent, #56B4E9) 30%, transparent); stroke: var(--lw-accent, #56B4E9); }
+
+@media (max-width: 560px) {
+  .lw-bench .lw-tray-item { min-width: 62px; min-height: 60px; padding: 5px 6px 4px; }
+  .lw-bench .lw-tray-label { font-size: 11px; }
+  .lw-bench .lw-chips { top: 60px; max-width: calc(100% - 20px); }
+  .lw-bench .lw-chip { font-size: 12.5px; border-radius: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .lw-bench .lw-chip { animation: none; } }
