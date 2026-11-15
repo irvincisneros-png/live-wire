@@ -15,7 +15,7 @@ export interface Part {
   b: number;
   /** battery: EMF in volts */
   emf?: number;
-  /** battery: internal resistance in ohms (default 0.2) */
+  /** battery: internal resistance in ohms (default 0.005, see BATTERY_RINT) */
   rInt?: number;
   /** resistor: ohms */
   resistance?: number;

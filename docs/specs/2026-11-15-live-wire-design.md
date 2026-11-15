@@ -104,8 +104,8 @@ A timber trade-school bench with a pegboard of brass terminal posts on a grid (d
 ### 5.2 Circuit solver
 
 Pure TypeScript, no three.js. Modified nodal analysis for DC with ideal-ish parts:
-- battery: EMF with small internal resistance (0.2 Ω per pack) so shorts give finite current
-- wire: 0.001 Ω; ammeter: 0.001 Ω; voltmeter: 10 MΩ; open switch / blown globe: removed
+- battery: EMF with small internal resistance (0.005 Ω) so shorts give finite current
+- wire: 0.0001 Ω; ammeter: 0.0001 Ω; voltmeter: 10 MΩ; open switch / blown globe: removed
 - globe: fixed resistance R = V_rated² / P_rated. This is a stated simplification (a real filament's resistance rises as it heats, so a real globe's V–I graph curves). Ohm's law is taught and assessed with resistors only (Station 4), with V on the vertical axis and I on the horizontal so the gradient is R
 - every node gets a 1e-12 S leak to a common reference so floating islands and voltmeter-only links solve without singular matrices; the voltmeter is part of the solve (10 MΩ). `Solution.status` is `ok` or `invalid` (NaN/failed solve); on `invalid` the UI shows "can't read this circuit" and no readouts or check passes
 - protection is one thing on the bench: a supply overload protector that trips when battery current exceeds its limit for 1.5 s of sim time (a game approximation, labelled as such). Safety switches (RCDs) are described in text only
