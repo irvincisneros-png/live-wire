@@ -122,6 +122,7 @@ export function createBench(stageIn: Stage, uiHost: HTMLElement, opts: BenchOpti
     const rebuilt = view.sync(parts);
     if (structural || rebuilt) { flow.setSources(view.flowSources(parts)); structural = false; }
     diagram.update(parts, adjustable?.partId ?? null);
+    diagram.setFlow(xray ? parts : null, solution);
     trayUi.refresh(counts());
     renderChips();
     renderList();
@@ -509,7 +510,7 @@ export function createBench(stageIn: Stage, uiHost: HTMLElement, opts: BenchOpti
     get selectedId() { return selectedId; },
     select(id) { setSelected(id && byId(id) ? id : null); },
     onSelect(cb) { selectCbs.add(cb); return () => selectCbs.delete(cb); },
-    setXray(on) { xray = on; view.setXray(on); },
+    setXray(on) { xray = on; view.setXray(on); diagram.setFlow(on ? parts : null, solution); },
     get xray() { return xray; },
     setTray(items) { tray = items; if (armed && !items.some((i) => i.key === armed!.key)) disarm(); trayUi.setItems(tray, counts()); trayUi.setDisabled(readOnly, counts()); },
     setReadOnly(r) { readOnly = r; if (r) disarm(); trayUi.setDisabled(r, counts()); renderList(); renderPopover(); },

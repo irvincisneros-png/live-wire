@@ -75,6 +75,26 @@ export function createJ4Scene(view: HTMLElement, quality: QualityTier): J4Scene 
   // a picture above the TV, and the electricity meter box on the back wall
   const frame = mesh(rbox(1.0, 0.7, 0.04, 0.01), M.timber('dark', 1, 1)); frame.position.set(3.7, 2.4, -3.26); root.add(frame);
   const art = mesh(rbox(0.88, 0.58, 0.01, 0.004), new THREE.MeshStandardMaterial({ color: 0x6fa3b8, roughness: 0.8 }), false); art.position.set(3.7, 2.4, -3.23); root.add(art);
+  // furnishings so the room reads as a lived-in home rather than a display stand
+  const fabric = new THREE.MeshStandardMaterial({ color: 0x5f7886, roughness: 1 });
+  const sofa = new THREE.Group(); sofa.position.set(3.5, 0.04, 2.35); root.add(sofa);
+  const sBase = mesh(rbox(2.5, 0.42, 0.95, 0.1, 3), fabric); sBase.position.y = 0.33; sofa.add(sBase);
+  const sBack = mesh(rbox(2.5, 0.62, 0.28, 0.1, 3), fabric); sBack.position.set(0, 0.72, 0.36); sofa.add(sBack);
+  for (const ax of [-1.2, 1.2]) { const arm = mesh(rbox(0.26, 0.5, 0.95, 0.09, 3), fabric); arm.position.set(ax, 0.55, 0); sofa.add(arm); }
+  for (const cx of [-0.6, 0.6]) { const cu = mesh(rbox(1.0, 0.16, 0.6, 0.07, 3), new THREE.MeshStandardMaterial({ color: 0x6c8795, roughness: 1 })); cu.position.set(cx, 0.6, -0.08); sofa.add(cu); }
+  const pillow = mesh(rbox(0.42, 0.42, 0.14, 0.06, 3), new THREE.MeshStandardMaterial({ color: 0xd9a441, roughness: 1 })); pillow.position.set(-0.85, 0.82, 0.14); pillow.rotation.x = -0.25; sofa.add(pillow);
+  const rug = mesh(rbox(3.4, 0.03, 2.1, 0.012), new THREE.MeshStandardMaterial({ color: 0xcdbb9f, roughness: 1 })); rug.position.set(3.4, 0.055, 0.55); root.add(rug);
+  const rugIn = mesh(rbox(3.0, 0.032, 1.7, 0.01), new THREE.MeshStandardMaterial({ color: 0x9c5c45, roughness: 1 }), false); rugIn.position.set(3.4, 0.058, 0.55); root.add(rugIn);
+  const table = mesh(rbox(1.1, 0.06, 0.6, 0.02), M.timber('bench', 1, 1)); table.position.set(3.4, 0.42, 0.75); root.add(table);
+  for (const [lx, lz] of [[-0.48, -0.23], [0.48, -0.23], [-0.48, 0.23], [0.48, 0.23]]) { const leg = mesh(rbox(0.05, 0.36, 0.05, 0.01), new THREE.MeshStandardMaterial({ color: 0x2a2623, roughness: 0.6 })); leg.position.set(3.4 + lx, 0.23, 0.75 + lz); root.add(leg); }
+  const pot = mesh(new THREE.CylinderGeometry(0.2, 0.15, 0.36, 16), new THREE.MeshStandardMaterial({ color: 0xb5694a, roughness: 0.8 })); pot.position.set(4.95, 0.22, 2.9); root.add(pot);
+  const leafM = new THREE.MeshStandardMaterial({ color: 0x3f7a45, roughness: 0.9 });
+  for (const [px, py, pz, pr] of [[0, 0.75, 0, 0.3], [0.16, 1.0, 0.08, 0.24], [-0.14, 1.05, -0.1, 0.22], [0.02, 1.3, 0.02, 0.18]]) { const lf = mesh(new THREE.SphereGeometry(pr, 12, 9), leafM); lf.position.set(4.95 + px, py, 2.9 + pz); lf.scale.y = 1.25; root.add(lf); }
+  // a window in the side wall with daylight behind it
+  const winFrame = mesh(rbox(0.08, 1.5, 2.0, 0.02), phys(0xf6f3ec)); winFrame.position.set(-5.19, 2.05, 1.9); root.add(winFrame);
+  const winPane = mesh(rbox(0.03, 1.3, 1.8, 0.01), new THREE.MeshStandardMaterial({ color: 0x9fd0f2, emissive: 0x9fd0f2, emissiveIntensity: 0.55, roughness: 0.1 }), false); winPane.position.set(-5.16, 2.05, 1.9); root.add(winPane);
+  const winBar = mesh(rbox(0.05, 1.3, 0.05, 0.01), phys(0xf6f3ec), false); winBar.position.set(-5.14, 2.05, 1.9); root.add(winBar);
+  const winSill = mesh(rbox(0.2, 0.05, 2.1, 0.02), phys(0xf6f3ec)); winSill.position.set(-5.1, 1.28, 1.9); root.add(winSill);
   const meterBox = mesh(rbox(0.5, 0.65, 0.18, 0.03), phys(0xd5d8dc, 0.45)); meterBox.position.set(-0.6, 2.1, -3.23); root.add(meterBox);
   const dial = mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.04, 28).rotateX(Math.PI / 2), phys(0xf7f7f4, 0.2, 0, { clearcoat: 1 }), false); dial.position.set(-0.6, 2.18, -3.12); root.add(dial);
   const wheel = mesh(rbox(0.2, 0.05, 0.01, 0.005), new THREE.MeshStandardMaterial({ color: 0x101010, roughness: 0.3 }), false); wheel.position.set(-0.6, 2.18, -3.095); root.add(wheel);

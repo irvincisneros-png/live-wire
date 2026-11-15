@@ -7,7 +7,8 @@ export type Route =
   | { name: 'board' }
   | { name: 'job'; id: string }
   | { name: 'jobsheet' }
-  | { name: 'about' };
+  | { name: 'about' }
+  | { name: 'lab' };
 
 export const STATION_IDS = ['s0', 's1', 's2', 's3', 's4', 's5', 's6', 's7'];
 export const JOB_IDS = ['j1', 'j2', 'j3', 'j4', 'j5'];
@@ -22,6 +23,7 @@ export function parseRoute(hash: string): Route {
   if (head === 'job') return parts[1] && JOB_IDS.includes(parts[1]) ? { name: 'job', id: parts[1] } : { name: 'board' };
   if (head === 'jobsheet') return { name: 'jobsheet' };
   if (head === 'about') return { name: 'about' };
+  if (head === 'lab') return { name: 'lab' };
   return { name: 'home' };
 }
 
@@ -33,6 +35,7 @@ export function routeHash(r: Route): string {
     case 'job': return `#job/${r.id}`;
     case 'jobsheet': return '#jobsheet';
     case 'about': return '#about';
+    case 'lab': return '#lab';
   }
 }
 

@@ -63,7 +63,7 @@ export function createJ5Scene(view: HTMLElement, quality: QualityTier): J5Scene 
   const stage = createStage(view, quality, { mood: 'outdoor', target: [1.5, 3.0, 1], distance: 33, yaw: 0.55, pitch: 0.3, minDistance: 12, maxDistance: 55 });
   const scene = stage.scene;
   const fog = scene.fog as THREE.Fog;
-  fog.near = 38; fog.far = 76;
+  fog.near = 58; fog.far = 135;
   const root = new THREE.Group(); scene.add(root);
   const sc = stage.keyLight.shadow.camera as THREE.OrthographicCamera;
   sc.left = -17; sc.right = 17; sc.top = 17; sc.bottom = -17; sc.near = 1; sc.far = 80; sc.updateProjectionMatrix();
@@ -90,31 +90,59 @@ export function createJ5Scene(view: HTMLElement, quality: QualityTier): J5Scene 
   const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 1.0, sizeAttenuation: false, transparent: true, opacity: 0, fog: false, depthWrite: false }));
   stars.frustumCulled = false; root.add(stars);
   const sunMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffe9a8).multiplyScalar(2.2), toneMapped: false, fog: false });
-  const sun = new THREE.Mesh(new THREE.SphereGeometry(1.1, 24, 16), sunMat); root.add(sun);
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(1.7, 24, 16), sunMat); root.add(sun);
   const sunGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture(), color: 0xffd98a, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false, fog: false }));
-  sunGlow.scale.set(9, 9, 1); sun.add(sunGlow);
+  sunGlow.scale.set(16, 16, 1); sun.add(sunGlow);
   const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(0.8, 20, 14), new THREE.MeshBasicMaterial({ color: 0xdfe6f5, toneMapped: false, fog: false })); root.add(moonMesh);
 
   // ── ground, road, trees ──
   const grassTex = canvas(256, 256);
   grassTex[1].fillStyle = '#6c8a47'; grassTex[1].fillRect(0, 0, 256, 256);
   for (let i = 0; i < 2600; i++) { grassTex[1].fillStyle = `rgba(${70 + Math.random() * 40},${110 + Math.random() * 50},${50 + Math.random() * 30},0.55)`; grassTex[1].fillRect(Math.random() * 256, Math.random() * 256, 2, 4); }
-  const gt = new THREE.CanvasTexture(grassTex[0]); gt.colorSpace = THREE.SRGBColorSpace; gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(24, 24); gt.anisotropy = 4;
+  for (let i = 0; i < 60; i++) { const gx = Math.random() * 256, gy = Math.random() * 256, gr = 14 + Math.random() * 34; const gg2 = grassTex[1].createRadialGradient(gx, gy, 0, gx, gy, gr); const dk = Math.random() < 0.5; gg2.addColorStop(0, dk ? 'rgba(52,84,38,0.28)' : 'rgba(140,168,84,0.22)'); gg2.addColorStop(1, 'rgba(0,0,0,0)'); grassTex[1].fillStyle = gg2; grassTex[1].fillRect(gx - gr, gy - gr, gr * 2, gr * 2); }
+  const gt = new THREE.CanvasTexture(grassTex[0]); gt.colorSpace = THREE.SRGBColorSpace; gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(11, 11); gt.anisotropy = 4;
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.MeshStandardMaterial({ map: gt, roughness: 1 })); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; root.add(ground);
   const road = new THREE.Mesh(new THREE.PlaneGeometry(6, 160), new THREE.MeshStandardMaterial({ color: 0x3b3d42, roughness: 0.9 })); road.rotation.x = -Math.PI / 2; road.position.set(17, 0.02, 0); road.receiveShadow = true; root.add(road);
   for (let i = -8; i < 8; i++) { const d = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 2), new THREE.MeshBasicMaterial({ color: 0xe8e4d0 })); d.rotation.x = -Math.PI / 2; d.position.set(17, 0.03, i * 4.5); root.add(d); }
   const kerb = mesh(rbox(0.3, 0.12, 160, 0.03), new THREE.MeshStandardMaterial({ color: 0xb4b0a6, roughness: 0.9 })); kerb.position.set(13.9, 0.06, 0); root.add(kerb);
-  const path = mesh(rbox(2.2, 0.06, 9, 0.02), new THREE.MeshStandardMaterial({ color: 0xbdb8ad, roughness: 0.9 })); path.position.set(-1.6, 0.03, 9.2); root.add(path);
+  const path = mesh(rbox(2.2, 0.06, 9, 0.02), new THREE.MeshStandardMaterial({ color: 0xbdb8ad, roughness: 0.9 })); path.position.set(-1.7, 0.03, 9.2); root.add(path);
   const drive = mesh(rbox(3.6, 0.06, 9, 0.02), new THREE.MeshStandardMaterial({ color: 0xa9a59c, roughness: 0.95 })); drive.position.set(3.6, 0.03, 9.2); root.add(drive);
+  // deterministic scatter so the yard looks the same every visit
+  let rs = 7;
+  const rnd = () => { rs = (rs * 16807) % 2147483647; return rs / 2147483647; };
+  const leafMats = [0x3d7436, 0x4b8a42, 0x33652f, 0x5a9648].map((c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.95 }));
+  const barkMat = new THREE.MeshStandardMaterial({ color: 0x57432f, roughness: 1 });
+  const blob = (r: number, mat: THREE.Material) => {
+    const g = new THREE.SphereGeometry(r, 14, 10);
+    const pa = g.attributes.position as THREE.BufferAttribute;
+    for (let k = 0; k < pa.count; k++) { const f = 1 + (Math.sin(pa.getX(k) * 7.1 + pa.getY(k) * 5.3) + Math.sin(pa.getZ(k) * 6.7)) * 0.045; pa.setXYZ(k, pa.getX(k) * f, pa.getY(k) * f, pa.getZ(k) * f); }
+    g.computeVertexNormals();
+    return mesh(g, mat);
+  };
   const tree = (x: number, z: number, s: number) => {
     const t = new THREE.Group();
-    const trunk = mesh(new THREE.CylinderGeometry(0.14 * s, 0.2 * s, 2 * s, 10), new THREE.MeshStandardMaterial({ color: 0x5b4632, roughness: 1 })); trunk.position.y = s; t.add(trunk);
-    for (const [dx, dy, dz, r] of [[0, 2.7, 0, 1.4], [0.7, 2.2, 0.3, 1.0], [-0.6, 2.3, -0.3, 1.1]]) {
-      const f = mesh(new THREE.IcosahedronGeometry(r * s, 2), new THREE.MeshStandardMaterial({ color: 0x477a3c, roughness: 0.9, flatShading: false })); f.position.set(dx * s, dy * s, dz * s); t.add(f);
+    const trunk = mesh(new THREE.CylinderGeometry(0.11 * s, 0.24 * s, 2.3 * s, 10), barkMat); trunk.position.y = 1.15 * s; t.add(trunk);
+    for (const a of [0.6, 2.7, 4.6]) { const br = mesh(new THREE.CylinderGeometry(0.05 * s, 0.09 * s, 1.1 * s, 6), barkMat); br.position.set(Math.cos(a) * 0.35 * s, 2.3 * s, Math.sin(a) * 0.35 * s); br.rotation.set(Math.sin(a) * 0.7, 0, -Math.cos(a) * 0.7); t.add(br); }
+    for (let k = 0; k < 9; k++) {
+      const a = rnd() * Math.PI * 2, rr = (k === 0 ? 0 : 0.5 + rnd() * 0.75) * s;
+      const f = blob((0.75 + rnd() * 0.55) * s, leafMats[Math.floor(rnd() * leafMats.length)]);
+      f.position.set(Math.cos(a) * rr, (2.6 + rnd() * 1.3 + (k === 0 ? 0.5 : 0)) * s, Math.sin(a) * rr); f.scale.y = 0.8 + rnd() * 0.25; t.add(f);
     }
-    t.position.set(x, 0, z); root.add(t);
+    t.position.set(x, 0, z); t.rotation.y = rnd() * 6; root.add(t);
   };
-  tree(-11, 7, 1.3); tree(-9, -6, 1.1); tree(10, -8, 1.4); tree(-14, 0, 1.0);
+  tree(-11, 7, 1.3); tree(-9, -7, 1.2); tree(10, -8, 1.4); tree(-14.5, 0, 1.05);
+  tree(-3, -13, 1.7); tree(4.5, -14, 1.5); tree(-17, -11, 1.5); tree(-20, 6, 1.3); tree(11, -17, 1.6); tree(-10, -18, 1.4);
+  // garden bed and shrubs along the front wall, a clipped hedge on the street boundary, a letterbox
+  const soil = new THREE.MeshStandardMaterial({ color: 0x4a3a2c, roughness: 1 });
+  for (const [bx, bw] of [[-4.4, 3.4], [2.9, 6.0]] as const) { const bed = mesh(rbox(bw, 0.12, 0.9, 0.05), soil); bed.position.set(bx, 0.06, 4.75); root.add(bed); }
+  for (const sx of [-5.6, -4.6, -3.5, 0.4, 1.5, 2.6, 3.6, 4.7, 5.5]) { const sh = blob(0.34 + rnd() * 0.16, leafMats[Math.floor(rnd() * leafMats.length)]); sh.position.set(sx, 0.36, 4.75 + (rnd() - 0.5) * 0.2); sh.scale.y = 0.85; root.add(sh); }
+  for (const fx of [-4.9, 1.0, 4.2]) { const fl = mesh(new THREE.SphereGeometry(0.09, 8, 6), new THREE.MeshStandardMaterial({ color: fx > 2 ? 0xf2c14e : 0xe8719a, roughness: 0.7 }), false); fl.position.set(fx, 0.72, 4.95); root.add(fl); }
+  const hedgeMat = leafMats[2];
+  for (const [hx, hw] of [[-9.6, 13.2], [0.55, 1.5], [9.55, 7.9]] as const) { const hd = mesh(rbox(hw, 0.85, 0.75, 0.3, 4), hedgeMat); hd.position.set(hx, 0.42, 13.4); root.add(hd); }
+  const hedgeW = mesh(rbox(0.75, 0.85, 26, 0.3, 4), hedgeMat); hedgeW.position.set(-16.2, 0.42, 0.6); root.add(hedgeW);
+  const lbPost = mesh(rbox(0.1, 1.0, 0.1, 0.02), new THREE.MeshStandardMaterial({ color: 0xf1ede4, roughness: 0.6 })); lbPost.position.set(1.55, 0.5, 13.9); root.add(lbPost);
+  const lbBox = mesh(rbox(0.42, 0.26, 0.26, 0.05), new THREE.MeshStandardMaterial({ color: 0x9c2f2a, roughness: 0.45 })); lbBox.position.set(1.55, 1.1, 13.9); root.add(lbBox);
+  const verge = mesh(rbox(0.9, 0.05, 160, 0.02), new THREE.MeshStandardMaterial({ color: 0xbdb8ad, roughness: 0.92 })); verge.position.set(15.1, 0.03, 0); root.add(verge);
 
   // ── house ──
   const wallMat = new THREE.MeshStandardMaterial({ color: 0xeee6d6, roughness: 0.92 });
@@ -133,6 +161,10 @@ export function createJ5Scene(view: HTMLElement, quality: QualityTier): J5Scene 
   const ridge = mesh(rbox(13.3, 0.2, 0.34, 0.05), new THREE.MeshStandardMaterial({ color: 0x35393d, roughness: 0.5, metalness: 0.4 })); ridge.position.set(0, RIDGE_Y + 0.02, 0); root.add(ridge);
   const fascia = mesh(rbox(13.2, 0.14, 0.06, 0.02), new THREE.MeshStandardMaterial({ color: 0xf1ede4, roughness: 0.6 })); fascia.position.set(0, 2.84, 4.58); root.add(fascia);
   const plinth = mesh(rbox(12.1, 0.3, 8.1, 0.04), new THREE.MeshStandardMaterial({ color: 0xa7a197, roughness: 0.95 })); plinth.position.y = 0.15; root.add(plinth);
+  const gutter = mesh(rbox(13.3, 0.12, 0.14, 0.04), new THREE.MeshStandardMaterial({ color: 0xe9e5dc, roughness: 0.5 })); gutter.position.set(0, 2.76, 4.66); root.add(gutter);
+  const downpipe = mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.6, 8), new THREE.MeshStandardMaterial({ color: 0xe9e5dc, roughness: 0.5 })); downpipe.position.set(-5.85, 1.45, 4.1); root.add(downpipe);
+  const awning = mesh(rbox(2.2, 0.08, 1.3, 0.03), new THREE.MeshStandardMaterial({ color: 0x3a3f44, roughness: 0.5, metalness: 0.3 })); awning.position.set(-1.7, 2.52, 4.6); awning.rotation.x = 0.16; root.add(awning);
+  for (const px of [-2.7, -0.7]) { const post = mesh(rbox(0.09, 2.3, 0.09, 0.02), new THREE.MeshStandardMaterial({ color: 0xf1ede4, roughness: 0.6 })); post.position.set(px, 1.25, 5.15); root.add(post); }
   // windows and door on the north wall
   const winGlass: THREE.MeshStandardMaterial[] = [];
   const frameMat = new THREE.MeshStandardMaterial({ color: 0xf6f4ee, roughness: 0.45 });
@@ -253,7 +285,7 @@ export function createJ5Scene(view: HTMLElement, quality: QualityTier): J5Scene 
 
   // ── time of day ──
   const tmpA = new THREE.Color(), tmpB = new THREE.Color();
-  const NIGHT_TOP = new THREE.Color(0x050914), DAY_TOP = new THREE.Color(0x3a82d0), NIGHT_H = new THREE.Color(0x141d36), DAY_H = new THREE.Color(0xb9d8ee);
+  const NIGHT_TOP = new THREE.Color(0x050914), DAY_TOP = new THREE.Color(0x3a82d0), NIGHT_H = new THREE.Color(0x141d36), DAY_H = new THREE.Color(0xa6cdf0);
   let hourShown = 8, hourGoal = 8;
   let res: SolarResult | null = null;
   function applyTime(h: number): void {
@@ -261,26 +293,26 @@ export function createJ5Scene(view: HTMLElement, quality: QualityTier): J5Scene 
     const sy = Math.sin(phi);
     const day = Math.pow(Math.max(0, Math.min(1, (sy + 0.1) * 2.6)), 0.9);
     const tw = Math.exp(-Math.pow((sy - 0.02) / 0.2, 2));
-    sun.position.set(-20 * Math.cos(phi), 10 * sy, 4 + 4 * sy);
+    sun.position.set(-50 * Math.cos(phi), 34 * sy + 2, -18 + 6 * sy); // far out near the sky dome, never inside the yard
     sun.visible = sy > -0.12;
     sunMat.color.set(0xffe9a8).lerp(tmpA.set(0xff9a4a), tw * 0.9).multiplyScalar(2.2);
     (sunGlow.material as THREE.SpriteMaterial).opacity = 0.35 + 0.5 * day + 0.25 * tw;
     const mphi = phi + Math.PI;
     const msy = Math.sin(mphi);
-    moonMesh.position.set(-20 * Math.cos(mphi), 9 * msy, 3);
+    moonMesh.position.set(-48 * Math.cos(mphi), 30 * msy + 2, -20);
     moonMesh.visible = msy > 0.05 && day < 0.5;
     skyMat.uniforms.top.value.copy(NIGHT_TOP).lerp(DAY_TOP, day);
     skyMat.uniforms.horizon.value.copy(NIGHT_H).lerp(DAY_H, day);
     skyMat.uniforms.glowAmt.value = tw * 0.95;
     (skyMat.uniforms.glowDir.value as THREE.Vector3).set(-Math.cos(phi) < 0 ? -1 : 1, 0, 0.35).normalize();
     scene.background = tmpB.copy(skyMat.uniforms.horizon.value) as THREE.Color;
-    fog.color.copy(skyMat.uniforms.horizon.value as THREE.Color).lerp(tmpA.set(0xffb27a), tw * 0.35);
+    fog.color.copy(skyMat.uniforms.horizon.value as THREE.Color).lerp(tmpA.set(0xffb27a), tw * 0.12);
     // lights
-    stage.keyLight.position.copy(sun.position).multiplyScalar(1.7).add(new THREE.Vector3(0, 3, 2));
+    stage.keyLight.position.set(-20 * Math.cos(phi), 10 * sy, 4 + 4 * sy).multiplyScalar(1.7).add(new THREE.Vector3(0, 3, 2));
     stage.keyLight.intensity = keyBase * day * 1.15;
     stage.keyLight.color.set(0xfff1d6).lerp(tmpA.set(0xff9a55), tw * 0.8);
     stage.keyLight.castShadow = quality !== 'low' && day > 0.05;
-    moon.position.copy(moonMesh.position).multiplyScalar(2); moon.intensity = 0.9 * (1 - day) * (moonMesh.visible ? 1 : 0.4);
+    moon.position.set(-20 * Math.cos(mphi), 9 * msy, 3).multiplyScalar(2); moon.intensity = 0.9 * (1 - day) * (moonMesh.visible ? 1 : 0.4);
     const amb = 0.34 + 0.8 * day;
     for (const o of others) o.l.intensity = o.base * amb;
     scene.environmentIntensity = envBase * (0.3 + 0.7 * day);

@@ -1,6 +1,7 @@
 // Circuit diagram (SVG) that mirrors the bench on the same grid with standard school symbols,
 // the "draw it" diagram editor, and symbol icons for the tray. Strokes use currentColor.
-import type { Part, PartKind } from '../types';
+import type { Part, PartKind, Solution } from '../types';
+import { dotSpeedMag, glowAt } from './flowmath';
 import { adjacent, allEdges, colRow, edgeKey, postName, type GridSize } from './grid';
 import { sameTopology } from './topology';
 
@@ -113,9 +114,40 @@ function makeSvg(g: GridSize, label: string): SVGSVGElement {
 }
 
 /** a live diagram for the bench: call update(parts) after every change */
-export function createDiagram(g: GridSize): { svg: SVGSVGElement; update(parts: Part[], adjustableId?: string | null): void } {
+export interface Diagram {
+  svg: SVGSVGElement;
+  update(parts: Part[], adjustableId?: string | null): void;
+  /** draw moving electron dots over the diagram for this solved circuit, or pass null to hide them */
+  setFlow(parts: Part[] | null, sol?: Solution): void;
+}
+
+export const FLOW_PITCH = 9; // px between dots on the diagram
+
+/** one animated dotted line per current-carrying part, drawn in the direction the ELECTRONS move (opposite to conventional current). Pure data so it can be tested. */
+export function flowLines(g: GridSize, parts: Part[], sol: Solution): { from: [number, number]; to: [number, number]; seconds: number; glow: number }[] {
+  if (sol.status !== 'ok') return [];
+  const vs = Object.values(sol.node);
+  const vmin = Math.min(...vs), vmax = Math.max(...vs);
+  const out: { from: [number, number]; to: [number, number]; seconds: number; glow: number }[] = [];
+  for (const p of parts) {
+    if (p.kind === 'voltmeter') continue;
+    const r = sol.parts[p.id];
+    if (!r || Math.abs(r.current) < 1e-6) continue;
+    const A = px(g, p.a), B = px(g, p.b);
+    // conventional current a→b means electrons go b→a
+    const from = r.current > 0 ? B : A, to = r.current > 0 ? A : B;
+    const speed = Math.max(4, dotSpeedMag(Math.abs(r.current)) * S); // px per second
+    const vmid = ((sol.node[p.a] ?? 0) + (sol.node[p.b] ?? 0)) / 2;
+    out.push({ from, to, seconds: FLOW_PITCH / speed, glow: glowAt(vmid, vmin, vmax) });
+  }
+  return out;
+}
+
+/** a live diagram for the bench: call update(parts) after every change */
+export function createDiagram(g: GridSize): Diagram {
   const svg = makeSvg(g, 'Circuit diagram of the board');
   const layer = el('g', {}, svg);
+  const flowLayer = el('g', { class: 'lw-dg-flow', 'aria-hidden': 'true' }, svg);
   return {
     svg,
     update(parts, adjustableId) {
@@ -123,6 +155,14 @@ export function createDiagram(g: GridSize): { svg: SVGSVGElement; update(parts: 
       drawParts(g, layer, parts, adjustableId);
       const n = parts.length;
       svg.setAttribute('aria-label', n ? `Circuit diagram: ${describe(g, parts)}` : 'Circuit diagram: the board is empty');
+    },
+    setFlow(parts, sol) {
+      flowLayer.replaceChildren();
+      if (!parts || !sol) return;
+      for (const f of flowLines(g, parts, sol)) {
+        const ln = el('line', { x1: f.from[0], y1: f.from[1], x2: f.to[0], y2: f.to[1], class: 'lw-dg-flowline', 'stroke-dasharray': `0.01 ${FLOW_PITCH}`, 'stroke-linecap': 'round', 'stroke-width': 4.6, opacity: (0.4 + 0.6 * f.glow).toFixed(2) }, flowLayer);
+        ln.style.animationDuration = `${f.seconds.toFixed(3)}s`;
+      }
     },
   };
 }

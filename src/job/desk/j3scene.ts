@@ -309,8 +309,8 @@ export function createJ3Scene(view: HTMLElement, quality: QualityTier): J3Scene 
 
   const fit = () => {
     const aspect = Math.max(0.5, view.clientWidth / Math.max(1, view.clientHeight));
-    const d = Math.max(13, Math.min(30, 18.5 / (0.688 * aspect)));
-    stage.setHome({ target: [0, 1.4, 0.2], distance: d, pitch: aspect < 1.2 ? 0.7 : 0.6, yaw: 0, minDistance: 7, maxDistance: 34 }, true);
+    const d = Math.max(11.5, Math.min(30, 16.2 / (0.688 * aspect)));
+    stage.setHome({ target: [0, 1.25, 0.1], distance: d, pitch: aspect < 1.2 ? 0.66 : 0.52, yaw: 0, minDistance: 7, maxDistance: 34 }, true);
   };
   const offResize = stage.onResize(fit);
   fit();

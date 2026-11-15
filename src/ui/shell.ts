@@ -1,4 +1,5 @@
 // Hash router + page lifecycle. Always disposes the current page before leaving it.
+import { mountLabPage } from './labPage';
 import { jobById } from '../job/index';
 import { stationById } from '../stations/index';
 import { Q } from '../types';
@@ -72,13 +73,14 @@ export function startShell(root: HTMLElement): void {
     currentRoute = route;
     root.replaceChildren();
     root.dataset.route = route.name;
-    document.body.classList.toggle('lw-fixed', route.name === 'station' || route.name === 'job');
+    document.body.classList.toggle('lw-fixed', route.name === 'station' || route.name === 'job' || route.name === 'lab');
     try {
       switch (route.name) {
         case 'home': current = renderHome(root, ctx); document.title = 'Live Wire: Year 9 electricity simulator'; break;
         case 'board': current = renderBoard(root, ctx); document.title = 'The Job | Live Wire'; break;
         case 'jobsheet': current = renderJobSheet(root, ctx); document.title = 'Job sheet | Live Wire'; break;
         case 'about': current = renderAbout(root, ctx); document.title = 'About | Live Wire'; break;
+        case 'lab': current = mountLabPage(root, ctx); document.title = 'Circuit lab | Live Wire'; break;
         case 'station': {
           const def = stationById(route.id);
           if (!def) { current = errorCard(root, 'Station not found', 'That station does not exist.'); break; }

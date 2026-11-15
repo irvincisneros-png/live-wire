@@ -338,7 +338,7 @@ h1:focus { outline: none; }
 .lw-coach--say .lw-coach-body { display: flex; align-items: flex-start; gap: 8px; }
 .lw-coach--say .lw-coach-text { flex: 1; padding: 6px 0; }
 .lw-coach--say .lw-coach-x { margin-left: 0; flex: none; }
-@media (max-width: 899px) { .lw-coach { left: 6px; top: 6px; width: calc(100% - 12px); } .lw-coach-text { font-size: .93rem; } }
+@media (max-width: 899px) { .lw-coach { left: 6px; top: 6px; width: calc(100% - 12px); padding: 6px 10px 4px; } .lw-coach-text { font-size: .86rem; line-height: 1.36; padding: 0 0 2px; } .lw-coach-step { font-size: .68rem; } .lw-coach-actions { font-size: .84rem; margin: 0; } }
 
 /* loading and errors */
 .lw-loading { position: absolute; inset: 0; z-index: 7; display: grid; place-items: center; align-content: center; gap: 10px; background: rgba(13,14,16,.82); color: var(--lw-muted); text-align: center; }
@@ -478,3 +478,19 @@ h1:focus { outline: none; }
 /* X-ray toggle added by stations/benchCommon.ts */
 .lw-xray-btn { position: absolute; right: 10px; top: 60px; z-index: 5; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22); background: rgba(20,22,28,.78); color: #fff; font: 600 14px/1 inherit; cursor: pointer; backdrop-filter: blur(8px); }
 .lw-xray-btn[aria-pressed="true"] { background: #F0E442; color: #14161c; border-color: #F0E442; box-shadow: 0 0 18px rgba(240,228,66,.45); }
+
+/* Circuit lab card on home, and lab side panel */
+.lw-labcard { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 26px 30px; border-radius: 18px; text-decoration: none; color: inherit;
+  background: linear-gradient(120deg, rgba(86,180,233,.16), rgba(240,228,66,.08) 60%, var(--lw-panel)); border: 1px solid rgba(86,180,233,.45); transition: transform .15s, border-color .15s; }
+.lw-labcard:hover { transform: translateY(-2px); border-color: #56B4E9; }
+.lw-labcard h2 { margin: 2px 0 6px; }
+.lw-labcard p { margin: 0; max-width: 62ch; color: var(--lw-muted); }
+.lw-labcard .lw-kicker { color: #56B4E9; }
+.lab-card { background: var(--lw-panel2, rgba(255,255,255,.04)); border: 1px solid var(--lw-line, rgba(255,255,255,.12)); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
+.lab-card h3 { margin: 0 0 8px; font-size: 1rem; }
+.lab-card p { margin: 6px 0 0; color: var(--lw-muted); font-size: .9rem; line-height: 1.45; }
+.lab-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.lab-row button { min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--lw-line, rgba(255,255,255,.18)); background: rgba(255,255,255,.06); color: inherit; font: 600 .92rem/1 inherit; cursor: pointer; }
+.lab-row button:hover { border-color: var(--lw-accent); }
+.lab-row button.is-on { background: #F0E442; color: #14161c; border-color: #F0E442; }
+.lab-diagram svg { width: 100%; height: auto; display: block; }

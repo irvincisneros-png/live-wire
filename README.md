@@ -15,6 +15,7 @@ Live: https://irvincisneros-png.github.io/live-wire/ · Teacher notes: https://i
   5. Power and energy (1.3.5, 1.3.6)
   6. Efficiency (1.1.1–1.1.3)
   7. Sources (1.2.1–1.2.3)
+- **Circuit lab.** An open bench with every part, starter circuits, a live circuit diagram and electron flow on both the board and the diagram.
 - **The Job: assessment day.** Five summative jobs as a first-year apprentice at a 12 V training house: fault call-out, install a new power point, the tripping power board, energy audit, solar and battery. Scored, no hints, with a printable job sheet.
 
 Electrons (the dots) always move from the negative terminal to the positive terminal. All hands-on wiring is on a 12 V training house; nothing in the app is a mains procedure.

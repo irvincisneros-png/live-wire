@@ -154,7 +154,7 @@ export function createS7Scene(view: HTMLElement, quality: QualityTier): S7Scene 
   let aspect = 1.6;
   const frame = (m: Machine, secs = 0.9) => {
     const portrait = aspect < 1;
-    const k = portrait ? Math.max(1.12, 1.08 / aspect) : Math.max(1.12, 1.75 / aspect);
+    const k = portrait ? Math.max(1.12, 1.5 / aspect) : Math.max(1.12, 1.75 / aspect);
     const v = m.view;
     const target: [number, number, number] = [v.target[0] + (portrait ? 0.7 : 1.5), v.target[1] + (portrait ? 1.0 : 0), v.target[2] - 0.6];
     stage.setHome({ target, distance: v.distance * k, yaw: v.yaw, pitch: v.pitch, maxDistance: Math.max(34, v.distance * k * 1.5) }, false);
