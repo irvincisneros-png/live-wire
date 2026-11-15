@@ -551,7 +551,8 @@ export function createDeepZoom(stage: KitStage, opts: DeepZoomOptions = {}): Dee
 
     // dots
     const ds = drift * dt;
-    const trail = Math.min(0.11, drift * 0.05);
+    // a very short, straight motion streak only: a long tail that wiggles behind a round head reads as a swimming cell
+    const trail = Math.min(0.028, drift * 0.014);
     const fadeK = Math.min(1, drift / 0.25);
     let crossings = 0;
     for (let i = 0; i < ND; i++) {
@@ -573,8 +574,8 @@ export function createDeepZoom(stage: KitStage, opts: DeepZoomOptions = {}): Dee
       for (let k = 1; k <= G; k++) {
         const vi = base + k;
         if (fadeK <= 0.001) { dotFade[vi] = 0; continue; }
-        placeDot(s1 - trail * k, dU[i], dV[i], t - k * 0.016, i, dotPos, vi * 3);
-        dotGlowA[vi] = dGlow[i]; dotFade[vi] = fadeK * (1 - k / (G + 1)) * 0.75;
+        placeDot(s1 - trail * k, dU[i], dV[i], t, i, dotPos, vi * 3);
+        dotGlowA[vi] = dGlow[i]; dotFade[vi] = fadeK * (1 - k / (G + 1)) * 0.4;
       }
     }
     dPosAttr.needsUpdate = true; dGlowAttr.needsUpdate = true; dFadeAttr.needsUpdate = true;
