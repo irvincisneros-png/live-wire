@@ -66,17 +66,17 @@ export function woodMaps(variant: 'bench' | 'dark' = 'bench'): WoodMaps {
     const [cc, cx] = canvas(W, H), [rc, rx] = canvas(W, H);
     const col = cx.createImageData(W, H), rough = rx.createImageData(W, H);
     const hgt = new Float32Array(W * H);
-    const light = variant === 'bench' ? [168, 122, 80] : [112, 72, 44];
-    const dark = variant === 'bench' ? [104, 66, 38] : [58, 34, 20];
+    const light = variant === 'bench' ? [150, 113, 80] : [112, 72, 44];
+    const dark = variant === 'bench' ? [96, 66, 44] : [58, 34, 20];
     const seed = variant === 'bench' ? 3 : 9;
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       const u = (x / W) * Math.PI * 2;
       // tileable in x: sample noise on a circle (radius sets how fast the grain wanders along the board)
       const nx = Math.cos(u) * 1.6, nz = Math.sin(u) * 1.6;
       const warp = fbm(nx + y * 0.004, nz + y * 0.003, 3, seed) * 0.9 + fbm(nx * 3, nz * 3 + y * 0.01, 2, seed + 1) * 0.25;
-      const rings = (y / H) * 44 + warp + fbm(nx * 5, nz * 5 + y * 0.08, 2, seed + 5) * 0.35;
+      const rings = (y / H) * 15 + warp * 1.1 + fbm(nx * 2, nz * 2 + y * 0.02, 2, seed + 5) * 0.5;
       // smooth periodic ring profile (no hard edges): narrow dark latewood band, wide earlywood
-      const g = Math.pow(0.5 + 0.5 * Math.sin(rings * Math.PI * 2), 4);
+      const g = Math.pow(0.5 + 0.5 * Math.sin(rings * Math.PI * 2), 2.2) * 0.6;
       // long thin pore streaks along the grain
       const fleck = fbm(nx * 40, y * 0.9 + nz * 40, 2, seed + 9);
       const pores = fleck > 0.62 ? (fleck - 0.62) * 1.6 : 0;

@@ -363,7 +363,7 @@ export function createBenchView(stage: KitStage, grid: GridSize, quality: Qualit
     const cam = stage.camera.clone();
     cam.aspect = aspect; cam.updateProjectionMatrix();
     // usable screen: leave room for the tray at the bottom and chips at the top (NDC)
-    const trayN = Math.min(0.5, (portrait ? 110 : 120) / h * 2), topN = Math.min(0.3, (portrait ? 70 : 60) / h * 2);
+    const trayN = Math.min(0.5, (portrait ? 110 : 120) / h * 2), topN = Math.min(0.42, (portrait ? 150 : 140) / h * 2);
     const place = (d: number, cz: number) => { cam.position.set(0, d * Math.sin(pitch), cz + d * Math.cos(pitch)); cam.lookAt(0, 0, cz); cam.updateMatrixWorld(); };
     const range = () => { let lo = Infinity, hi = -Infinity, wx = 0; for (const c of corners) { const v = c.clone().project(cam); lo = Math.min(lo, v.y); hi = Math.max(hi, v.y); wx = Math.max(wx, Math.abs(v.x)); } return { lo, hi, wx }; };
     const fits = () => { const r = range(); return r.wx < 0.97 && r.hi < 1 - topN && r.lo > -1 + trayN; };
