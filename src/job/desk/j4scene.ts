@@ -1,7 +1,7 @@
 // Job 4 scene: a cutaway dollhouse room with the audited appliances. Packets only appear at the reveal (they would give the ranking away).
 import * as THREE from 'three';
 import * as M from '../../kit/materials';
-import { createStage, type KitStage } from '../../kit/stage';
+import { contactShadow, createStage, type KitStage } from '../../kit/stage';
 import { disposeTree } from '../../kit/dispose';
 import { mesh, rbox } from '../../kit/parts/common';
 import type { QualityTier } from '../../types';
@@ -57,6 +57,9 @@ export function createJ4Scene(view: HTMLElement, quality: QualityTier): J4Scene 
 
   // ── shell of the house: slab, two walls, skirting ──
   const slab = mesh(rbox(10.8, 0.3, 7.0, 0.04), new THREE.MeshStandardMaterial({ color: 0xb8b0a2, roughness: 0.9 })); slab.position.set(0, -0.15, 0); root.add(slab);
+  // ground the model: a soft shadow pool and a plinth so the room does not float
+  const pool = contactShadow(19, 14, 0.62); pool.position.y = -0.47; root.add(pool);
+  const plinth = mesh(rbox(11.4, 0.16, 7.6, 0.05), new THREE.MeshStandardMaterial({ color: 0x4a4540, roughness: 0.7 })); plinth.position.set(0, -0.38, 0); root.add(plinth);
   const tex = tileFloor(); tex.repeat.set(6, 6);
   const tileM = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.3, metalness: 0 });
   const tiles = mesh(rbox(5.0, 0.04, 6.6, 0.01), tileM); tiles.position.set(-2.6, 0.02, 0); root.add(tiles);

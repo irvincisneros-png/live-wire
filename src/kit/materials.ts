@@ -58,7 +58,7 @@ export function plastic(colour = 0x2a1d16, roughness = 0.38): THREE.MeshPhysical
   return get(`plastic-${colour}-${roughness}`, () => new THREE.MeshPhysicalMaterial({ color: colour, roughness, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.4, roughnessMap: speckle() }));
 }
 
-export const ceramic = () => get('ceramic', () => new THREE.MeshPhysicalMaterial({ color: 0xf1ede2, roughness: 0.22, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.12 }));
+export const ceramic = () => get('ceramic', () => new THREE.MeshPhysicalMaterial({ color: 0xe4dfd2, roughness: 0.42, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.35 }));
 /** matte unglazed ceramic (power-resistor body) */
 export const ceramicMatte = () => get('ceramicMatte', () => new THREE.MeshStandardMaterial({ color: 0xe9e2d0, roughness: 0.82, metalness: 0, roughnessMap: speckle() }));
 /** black lacquer / dark phenolic for panels */

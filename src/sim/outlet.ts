@@ -140,7 +140,7 @@ export interface OutletInput {
   wiring: Wiring;
   /** the training supply was switched off before touching any conductor */
   isolated: boolean;
-  /** the meter was used to show the wiring was dead before touching it */
+  /** the meter was used to check the training supply was off before touching the wiring */
   provedDead: boolean;
   /** both outlets were tested with a lamp */
   testedBoth: boolean;
@@ -149,7 +149,7 @@ export interface OutletInput {
   options?: OutletOptions;
 }
 
-/** Score Job 2: parallel connection 35 (active 12, neutral 12, earth 11), off and proven dead 25, both outlets at full voltage 15, current prediction within 5 % 25. */
+/** Score Job 2: parallel connection 35 (active 12, neutral 12, earth 11), off and checked 25, both outlets at full voltage 15, current prediction within 5 % 25. */
 export function scoreOutlet(input: OutletInput): JobResult {
   const o = input.options ?? {};
   const rep = analyseOutlet(input.wiring, o);
@@ -165,13 +165,13 @@ export function scoreOutlet(input: OutletInput): JobResult {
   const predOk = input.predictedA !== null && within(input.predictedA, truth, 0.05, 0.01);
   const answers: JobAnswer[] = [
     { q: 'New outlet wired in parallel', a: rep.verdict, ok: connScore === 35 },
-    { q: 'Switched off and proved dead first', a: `${input.isolated ? 'switched off' : 'not switched off'}, ${input.provedDead ? 'proved dead with the meter' : 'not proved dead'}`, ok: safeScore === 25 },
+    { q: 'Switched off and checked the training supply first', a: `${input.isolated ? 'switched off' : 'not switched off'}, ${input.provedDead ? 'checked with the meter' : 'not checked with the meter'}`, ok: safeScore === 25 },
     { q: 'Both outlets at full voltage', a: `existing ${rep.existingVolts.toFixed(1)} V, new ${rep.newVolts.toFixed(1)} V`, ok: fullOk && input.testedBoth },
     { q: 'New total current (I = V ÷ R)', a: input.predictedA === null ? 'no answer' : `${input.predictedA.toFixed(2)} A (answer ${truth.toFixed(2)} A)`, ok: predOk },
   ];
   const lines: string[] = [];
   lines.push(connScore === 35 ? 'Your new outlet is in parallel with the existing one.' : rep.problems[0] ?? 'Check each conductor goes to the matching terminal.');
-  lines.push(safeScore === 25 ? 'You switched off and proved it dead first. That is the safe habit.' : 'Always switch off and prove it dead with the meter before touching conductors.');
+  lines.push(safeScore === 25 ? 'You switched off and checked the training supply first. That is the safe habit. This check is simplified and does not prove real wiring is safe.' : 'Always switch off and check the training supply with the meter before touching conductors.');
   lines.push(fullOk ? (input.testedBoth ? 'Both outlets read full voltage.' : 'Both outlets would read full voltage, but you did not test both.') : 'One outlet does not read full voltage.');
   lines.push(predOk ? 'Your current prediction was right.' : `Add the lamp currents. Each is V ÷ R. The answer is about ${truth.toFixed(1)} A.`);
   return makeResult(connScore + safeScore + testScore + (predOk ? 25 : 0), lines, answers);

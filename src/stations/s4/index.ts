@@ -118,7 +118,7 @@ export function mount(host: StationHost): StationInstance {
     const n = points.filter((p) => p.group === activeGroup).length;
     if (!points.length) grad.textContent = 'Record points to build the graph.';
     else if (k !== null) grad.innerHTML = `${groupLabel(activeGroup)} line: gradient = ΔV ÷ ΔI = <span class="q-resistance">${sig3(k)} Ω</span> (this is R)`;
-    else grad.textContent = activeGroup === 'globe' ? 'A globe does not give a straight line through the origin.' : `Record ${Math.max(0, 3 - n)} more point${3 - n === 1 ? '' : 's'} for ${groupLabel(activeGroup)} to draw the line.`;
+    else grad.textContent = activeGroup === 'globe' ? 'A real filament globe gives a curved V–I graph because its resistance rises as it heats. The globes in this simulator are simplified to a fixed resistance.' : `Record ${Math.max(0, 3 - n)} more point${3 - n === 1 ? '' : 's'} for ${groupLabel(activeGroup)} to draw the line.`;
   }
 
   function drawTable(): void {

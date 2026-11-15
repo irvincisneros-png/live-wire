@@ -47,7 +47,7 @@ export interface J2State {
   wiring: Wiring;
   plugged: { existing: boolean; new: boolean };
   readings: J2Reading[];
-  /** proved dead since the supply was last switched off */
+  /** training supply checked off with the meter since it was last switched off */
   provedThisOff: boolean;
   /** any conductor touched at all */
   touched: boolean;
@@ -118,16 +118,16 @@ export function setSupply(s: J2State, on: boolean): void {
 const ACTIVE_NODES = new Set([POINT_NODE['supply-active'], POINT_NODE['existing-active']]);
 const NEUTRAL_NODES = new Set([POINT_NODE['supply-neutral'], POINT_NODE['existing-neutral']]);
 
-/** true if a reading proves the work point dead: supply off, between active and neutral at the supply junction or the existing outlet, reading 0 V */
+/** true if a reading shows the training supply is off (not a real-world proof of safety): supply off, between active and neutral at the supply junction or the existing outlet, reading a finite 0 V */
 export function provesDead(r: J2Reading): boolean {
   const an = (ACTIVE_NODES.has(r.a) && NEUTRAL_NODES.has(r.b)) || (ACTIVE_NODES.has(r.b) && NEUTRAL_NODES.has(r.a));
-  return !r.supplyOn && an && Math.abs(r.v) < 0.5;
+  return !r.supplyOn && an && Number.isFinite(r.v) && Math.abs(r.v) < 0.5;
 }
 
 /** black (COM) probe on node a, red on node b. Reading = V(red) − V(black). */
 export function measure(s: J2State, a: number, b: number): number {
   const v = a === b ? 0 : readVoltage(liveParts(s), { a, b });
-  const r: J2Reading = { a, b, v: Number.isFinite(v) && Math.abs(v) >= 0.005 ? v : 0, supplyOn: s.supplyOn };
+  const r: J2Reading = { a, b, v: !Number.isFinite(v) ? NaN : Math.abs(v) >= 0.005 ? v : 0, supplyOn: s.supplyOn };
   s.readings.push(r);
   if (provesDead(r)) s.provedThisOff = true;
   return r.v;

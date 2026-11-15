@@ -1,10 +1,10 @@
-// Job 2: Install a new power point on the 12 V training wall. The student switches the training supply, proves it
-// dead with the meter, connects the new outlet's three conductors, plugs in test lamps, restores supply, tests and
+// Job 2: Install a new power point on the 12 V training wall. The student switches the training supply, checks it
+// is off with the meter, connects the new outlet's three conductors, plugs in test lamps, restores supply, tests and
 // predicts the total current (I = V ÷ R). No shock is ever simulated: unsafe work shows a calm stop card and costs
 // the safe-work marks. Scored by scoreOutlet.
 import type { JobHost, JobInstance } from '../../types';
 import { createStage } from '../../kit/stage';
-import { SAFETY_MESSAGE } from '../../ui/content';
+import { SAFETY_SIMPLIFIED as SAFETY_J2 } from '../../ui/content';
 import { h } from '../../ui/dom';
 import { OUTLET_POINTS, type OutletPoint, type OutletTerminal } from '../../sim/outlet';
 import { createTrainingHouse, type CameraPreset, type HouseHit } from '../house3d';
@@ -16,7 +16,7 @@ import '../j12.css';
 
 const TERM_LABEL: Record<OutletTerminal, string> = { active: 'Active (red)', neutral: 'Neutral (black)', earth: 'Earth (green-yellow)' };
 const STOP_TITLE = 'Stop.';
-const STOP_BODY = 'On a real job this is how people are hurt. The supply must be off and proven dead before anyone touches a conductor.';
+const STOP_BODY = 'On a real job this is how people are hurt. The supply must be switched off and checked with the meter before anyone touches a conductor.';
 
 export function mount(host: JobHost): JobInstance {
   const stage = createStage(host.view, host.quality, { mood: 'house', minDistance: 6, maxDistance: 220 });
@@ -82,7 +82,7 @@ export function mount(host: JobHost): JobInstance {
       h('p', { class: 'lw-kicker' }, 'Work order'),
       h('h2', { class: 'j12-title' }, 'Install a new power point'),
       h('p', null, 'Add a second 12 V training outlet to the kitchen wall so it works alongside the existing one. Work safely, test both outlets with a lamp, then predict the new total current. Do the steps in the order you choose. Your actions are recorded and scored.'),
-      h('p', { class: 'j12-safety' }, h('b', null, 'Safety. '), SAFETY_MESSAGE, ' This is a 12 V training wall. It is not a how-to for house wiring.')),
+      h('p', { class: 'j12-safety' }, h('b', null, 'Safety. '), 'This is a 12 V training wall. It is not a how-to for house wiring. ', SAFETY_J2)),
     chips,
     sec('Training supply (main switch)', supplyBtn),
     sec('Multimeter (DC volts)',
@@ -156,6 +156,15 @@ export function mount(host: JobHost): JobInstance {
     setProbes(a, b);
     const pa = j2Point(a)!, pb = j2Point(b)!;
     const v = measure(st, pa.node, pb.node);
+    if (!Number.isFinite(v)) {
+      house.setMeterReading(null);
+      (readout.firstChild as HTMLElement).textContent = fmtV(v);
+      emptyRow.remove();
+      tbody.append(h('tr', null, h('td', null, pa.short), h('td', null, pb.short), h('td', null, st.supplyOn ? 'on' : 'off'), h('td', { class: 'j12-num' }, 'no reading')));
+      liveMsg.textContent = 'The meter could not give a reading between those two terminals. This does not count as 0 V.';
+      update();
+      return;
+    }
     house.setMeterReading(v);
     (readout.firstChild as HTMLElement).textContent = fmtV(v);
     host.dashboard.show({ label: `Meter ${pa.short} to ${pb.short}`, V: v });
@@ -200,7 +209,7 @@ export function mount(host: JobHost): JobInstance {
 
   const api = {
     house, stage, state: st,
-    /** a correct run through the UI: off, prove dead, connect in parallel, lamps, on, test, predict, submit */
+    /** a correct run through the UI: off, check the supply is off, connect in parallel, lamps, on, test, predict, submit */
     async solve() {
       doSupply(false);
       selBlack.value = 'existing-neutral'; selRed.value = 'existing-active'; takeReading();

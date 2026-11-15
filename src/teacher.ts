@@ -1,7 +1,7 @@
 import './ui/styles.css';
 import { JOBS } from './job/index';
 import { STATIONS } from './stations/index';
-import { DOT_POINTS, HUB_URL, MODEL_LIMITS, NOT_COVERED, SAFETY_MESSAGE } from './ui/content';
+import { DOT_POINTS, HUB_URL, MODEL_LIMITS, NOT_COVERED, SAFETY_MESSAGE, SAFETY_SIMPLIFIED } from './ui/content';
 import { h } from './ui/dom';
 import { APP_VERSION } from './ui/version';
 
@@ -48,7 +48,7 @@ const SEQUENCE: [string, string][] = [
 function rubricRows(): (string | Node)[][] {
   return [
     ['Job 1: Fault call-out', 'Fault and location correct (50). At least one measurement that actually tells the faults apart, taken before answering (25). Reasoning question (25). The number of measurements is recorded, not scored.'],
-    ['Job 2: Install a new power point', 'Parallel connection correct (35). "Off and proven dead" done before touching conductors (25, a safe-work habit; skipping it shows a calm stop card and costs the marks). Both outlets test at full voltage (15). Current prediction within 5 % (25).'],
+    ['Job 2: Install a new power point', 'Parallel connection correct (35). "Switched off and checked the training supply" done before touching conductors (25, a safe-work habit; skipping it shows a calm stop card and costs the marks). Both outlets test at full voltage (15). Current prediction within 5 % (25).'],
     ['Job 3: The tripping power board', 'Currents within 5 % (40). Explanation choice (20). The plan runs without a trip (40).'],
     ['Job 4: Energy audit', 'Top three users (30). Saving achieved as a fraction of the best possible saving, found by exhaustive search (50). Efficiency explanation (20).'],
     ['Job 5: Solar and battery', 'Energy balance question answered from the Sankey diagram (30). Evening demand met with grid import under a threshold (40). Trade-off question (30).'],
@@ -104,6 +104,7 @@ app.append(
 
       sec('safety', 'Safety position',
         h('p', null, SAFETY_MESSAGE),
+        h('p', null, SAFETY_SIMPLIFIED),
         h('p', null, 'All hands-on wiring in The Job is on a 12 V training house. Nothing in the game is a mains procedure, and there is no shock simulation. Jobs 3 to 5 are desk jobs that use real household numbers (230 V) but involve no wiring. The training house shows one common Australian colour convention and states that colour never proves a wire is safe. Please reinforce that mains work is for licensed electricians only.')),
 
       sec('approx', 'Approximations used',

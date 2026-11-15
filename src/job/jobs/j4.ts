@@ -143,6 +143,14 @@ export function mount(host: JobHost): JobInstance {
       note.textContent = blk === null ? '' : blk.reason === 'conflict' ? `Cannot combine with "${withName}".` : `Not enough budget left.`;
     }
   }
+  /** what an option changes, in plain numbers (no savings shown: the student works those out) */
+  function optionChange(o: (typeof OPTIONS)[number]): string {
+    const a = AUDIT_APPLIANCES.find((x) => x.id === o.applianceId)!;
+    const parts: string[] = [];
+    if (o.power !== undefined) parts.push(`${a.name}: ${a.powerW} W → ${o.power} W`);
+    if (o.hours !== undefined) parts.push(`${a.name}: ${a.hoursPerDay} h → ${o.hours} h a day`);
+    return parts.join('; ');
+  }
   const step3 = () => {
     const list = h('div', { class: 'j4-opts', role: 'group', 'aria-label': 'Upgrade options' }, OPTIONS.map((o) => {
       const app = AUDIT_APPLIANCES.find((a) => a.id === o.applianceId)!;
@@ -155,7 +163,7 @@ export function mount(host: JobHost): JobInstance {
       const note = h('span', { class: 'j4-opt-note' });
       const row = h('label', { class: 'j4-opt', for: inp.id },
         inp,
-        h('span', { class: 'j4-opt-main' }, h('span', { class: 'j4-opt-name' }, o.name), note),
+        h('span', { class: 'j4-opt-main' }, h('span', { class: 'j4-opt-name' }, o.name), h('span', { class: 'j4-opt-change dk-small' }, optionChange(o)), note),
         h('span', { class: 'j4-opt-cost' }, o.costDollars === 0 ? 'Free' : fmtMoney(o.costDollars).replace('.00', '')));
       row.addEventListener('pointerenter', () => scene.highlight(app.id));
       row.addEventListener('pointerleave', () => scene.highlight(null));
@@ -165,7 +173,7 @@ export function mount(host: JobHost): JobInstance {
     const padHost = h('div', { class: 'j4-padhost' }); padHosts[2] = padHost;
     renderOptions();
     return h('div', { class: 'dk-stepbody' },
-      h('p', null, `Choose changes to cut the yearly bill. You have ${fmtMoney(BUDGET).replace('.00', '')} to spend. Options that clash, or that you cannot afford, are switched off.`),
+      h('p', null, `Choose changes to cut the yearly bill. You have ${fmtMoney(BUDGET).replace('.00', '')} to spend. Each option shows what it changes, so you can work out the saving yourself (energy = power × hours). Options that clash, or that you cannot afford, are switched off.`),
       h('div', { class: 'j4-budget' }, meter, meterText), list, padHost);
   };
 

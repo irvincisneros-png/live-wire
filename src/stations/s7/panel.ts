@@ -52,7 +52,7 @@ export function createPanel(on: S7PanelHandlers): { el: HTMLElement; render(st: 
     h('details', { class: 's7-details' }, h('summary', null, 'Full table'), h('div', { class: 's7-tablewrap' }, table)),
     h('details', { class: 's7-details' }, h('summary', null, 'Efficiency or capacity factor?'),
       h('p', null, h('b', null, 'Conversion efficiency'), ' is how much of the energy going in comes out as electricity. A coal plant turns about a third of the coal\'s energy into electricity.'),
-      h('p', null, h('b', null, 'Capacity factor'), ' is how much electricity a plant makes over a year, compared with running flat out all year. A solar farm can be efficient enough and still have a low capacity factor, because the sun sets.')));
+      h('p', null, h('b', null, 'Capacity factor'), ' is the energy a plant really produces in a year as a fraction of what it would produce running at full power all year. A solar farm can be efficient enough and still have a low capacity factor, because the sun sets.')));
 
   // renewable sort
   const sortRows = h('div', { class: 's7-sort' });

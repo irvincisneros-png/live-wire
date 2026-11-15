@@ -80,7 +80,7 @@ export const LEGEND_TICKS = [20, 50, 100, 150, 200];
 
 export const WHERE_OPTIONS = [
   'It is destroyed inside the globe, so it no longer exists.',
-  'It spreads into the room as heat. It still exists, but we cannot use it.',
+  'It spreads into the surroundings as heat. It still exists, but it is not the light we wanted.',
   'It goes back into the power point as electricity.',
   'It is used up making the light brighter.',
 ];

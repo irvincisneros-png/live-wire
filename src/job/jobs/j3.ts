@@ -1,6 +1,6 @@
 // Job 3: the tripping power board. Desk job, real household numbers, no wiring.
 import type { JobHost, JobInstance } from '../../types';
-import { BOARD_APPLIANCES, EXPLANATION_OPTIONS, mainIds } from '../../sim/powerboard';
+import { BOARD_APPLIANCES, EXPLANATION_OPTIONS, SOCKET_VS_BREAKER, mainIds } from '../../sim/powerboard';
 import { MAINS_V } from '../../sim/appliances';
 import '../j345.css';
 import { createJ3Scene } from '../desk/j3scene';
@@ -60,6 +60,7 @@ export function mount(host: JobHost): JobInstance {
     } }, 'Plug everything in') as HTMLButtonElement;
     return h('div', { class: 'dk-stepbody' },
       h('p', null, 'This power board has a red overload reset button and a "10 A MAX" label. Press the button and watch the current meter as appliances are switched on.'),
+      h('p', { class: 'dk-small' }, SOCKET_VS_BREAKER),
       tripBtn, tripStatus);
   };
 
@@ -142,7 +143,9 @@ export function mount(host: JobHost): JobInstance {
     const o = runOutcome(st.assign);
     const line = (name: string, a: number, trip: boolean) => h('li', { class: trip ? 'is-bad' : 'is-good' }, `${name}: ${a.toFixed(1)} A. `, trip ? 'Over 16 A, so the breaker tripped.' : 'The breaker held.');
     runStatus.replaceChildren(h('ul', { class: 'j3-runlist' }, line('Circuit A', o.a, o.tripA), line('Circuit B', o.b, o.tripB)),
-      h('p', { class: 'dk-small' }, o.held ? 'Nothing tripped. You can submit, or change the plan and run it again.' : 'Something tripped. You may change the plan and run it again, or submit.'));
+      h('p', { class: 'dk-small' }, o.held ? 'Nothing tripped. You can submit, or change the plan and run it again.'
+        : o.tripA || o.tripB ? 'A breaker tripped. You may change the plan and run it again, or submit.'
+        : 'Neither breaker tripped, but fewer than four main appliances were running. Add one and run the plan again, or submit.'));
   }
 
   const step5 = () => {

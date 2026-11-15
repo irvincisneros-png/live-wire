@@ -142,11 +142,11 @@ export function mount(host: StationHost): StationInstance {
       done: () => !!sw(bench),
     },
     {
-      text: 'A new switch starts <b>open</b>, so there is a gap. The globe is out and every dot stopped at the same moment, but they are all still in the wire. <b>Close</b> the switch by tapping it.',
+      text: 'A new switch starts <b>open</b>, so there is a gap. The globe is out and the dots stopped drifting almost straight away, all around the loop, but they are all still in the wire. <b>Close</b> the switch by tapping it.',
       done: () => !!sw(bench)?.closed && lit(),
     },
     {
-      text: 'Tap the switch to <b>open</b> it again. The path is broken, so the <span class="q-current">current (I)</span> stops everywhere at once.',
+      text: 'Tap the switch to <b>open</b> it again. The path is broken, so the <span class="q-current">current (I)</span> stops almost straight away, all around the loop.',
       done: () => !!sw(bench) && !sw(bench)!.closed && !lit(),
     },
     {

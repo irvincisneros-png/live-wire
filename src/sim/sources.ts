@@ -17,7 +17,7 @@ export interface GenSource {
   chain: ChainStep[];
   /** typical conversion efficiency range, percent: how much of the energy in the fuel or flow becomes electricity */
   efficiencyPct: [number, number];
-  /** typical capacity factor range, percent: how much of the year the plant produces compared with running flat out */
+  /** typical capacity factor range, percent: the energy a plant really produces in a year as a fraction of what it would produce at full power all year */
   capacityFactorPct: [number, number];
   /** relative cost of new-build electricity, 1 = lowest, 5 = highest (before the cost of backup) */
   costBand: 1 | 2 | 3 | 4 | 5;
@@ -102,7 +102,7 @@ export const SOURCES: readonly GenSource[] = [
     efficiencyPct: [15, 22], capacityFactorPct: [20, 30], costBand: 1,
     costNote: 'The cheapest new power to build, but it needs storage for the night.',
     buildYears: [1, 2], co2gPerKWh: 0, dispatchable: false,
-    advantage: 'It has no moving parts and can sit on any roof.',
+    advantage: 'It has no moving parts and can go on suitable roofs.',
     disadvantage: 'It makes nothing at night and less on cloudy days.',
   },
 ];

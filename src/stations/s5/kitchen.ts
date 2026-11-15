@@ -353,13 +353,22 @@ export function createKitchen(stage: KitStage, view: HTMLElement, quality: Quali
       }
       (pgeo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
       (pgeo.attributes.aA as THREE.BufferAttribute).needsUpdate = true;
-      // tags follow their appliances
+      // tags follow their appliances, but never sit under the meter readout dock
+      const vr = view.getBoundingClientRect();
+      const dockEl = view.querySelector('.s5-dock') as HTMLElement | null;
+      const dr = dockEl && dockEl.offsetHeight > 0 ? dockEl.getBoundingClientRect() : null;
       for (const m of list) {
         const b = tags.get(m.id)!;
         const p = stage.toScreen(m.group.localToWorld(anchorW.copy(m.tag)));
         if (!p.visible) { b.style.visibility = 'hidden'; continue; }
         b.style.visibility = '';
-        b.style.transform = `translate(${Math.round(p.x)}px, ${Math.round(p.y)}px) translate(-50%, 4px)`;
+        let ty = p.y;
+        if (dr) {
+          const half = b.offsetWidth / 2, tagH = b.offsetHeight || 44;
+          const dl = dr.left - vr.left, dRight = dr.right - vr.left, dTop = dr.top - vr.top;
+          if (p.x + half > dl && p.x - half < dRight && ty + 4 + tagH > dTop - 4) ty = Math.max(0, dTop - 8 - tagH);
+        }
+        b.style.transform = `translate(${Math.round(p.x)}px, ${Math.round(ty)}px) translate(-50%, 4px)`;
         const o = isOn(m.id);
         if (b.getAttribute('aria-pressed') !== String(o)) b.setAttribute('aria-pressed', String(o));
         b.classList.toggle('is-metered', m.id === meterOn);

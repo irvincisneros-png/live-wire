@@ -92,7 +92,7 @@ export function mount(host: JobHost): JobInstance {
     sec('Your diagnosis',
       h('fieldset', { class: 'j12-fs' }, h('legend', null, 'What is the fault?'), ...kindRadios),
       h('label', { class: 'j12-field j12-field--wide' }, h('span', null, 'Where is it?'), locSel),
-      h('fieldset', { class: 'j12-fs' }, h('legend', null, 'A gap in a circuit reads the full supply voltage. Why?'), ...reasonRadios)),
+      h('fieldset', { class: 'j12-fs' }, h('legend', null, 'With every other switch closed and one gap in this circuit, almost the full supply voltage appears across the gap. Why?'), ...reasonRadios)),
     reveal,
     h('div', { class: 'j12-submitrow' }, submit)));
 
@@ -181,12 +181,24 @@ export function mount(host: JobHost): JobInstance {
     house.pulse(where);
     await sleep(900);
     if (disposed) return;
+    // isolate first: main switch off, every globe dark, before any repair
+    const cap = h('div', { class: 'j12-caption', role: 'status' }, 'Supply off before any repair');
+    cap.setAttribute('style', 'position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;padding:6px 12px;border-radius:8px;background:rgba(10,11,13,.78);color:#fff;font-weight:600;max-width:calc(100% - 24px);text-align:center');
+    host.view.append(cap);
+    house.setSwitch('main', false);
+    house.setSupplyDisplay(false);
+    for (let i = 0; i < 3; i++) house.setGlobe(i, { power: 0, blown: st.scenario.fault.kind === 'blown-globe' && i === Number(f.partId.slice(1)) });
+    await sleep(1100);
+    if (disposed) { cap.remove(); return; }
     const k = f.kind === 'blown-globe' ? Number(f.partId.slice(1)) : -1;
     if (f.kind === 'blown-globe') { house.setGlobe(k, { power: 0, blown: true }); await sleep(1300); if (disposed) return; await house.swapGlobe(k, 1.1); }
     else if (f.kind === 'broken-wire') { house.showWireBreak(f.partId); await sleep(1500); if (disposed) return; house.repairWire(f.partId); }
     else await house.swapSwitch(f.partId as SwitchId, 1.0);
     if (disposed) return;
     house.pulse(null);
+    // the repair is done: switch the training supply back on
+    cap.textContent = 'Repair done. Supply back on.';
+    house.setSupplyDisplay(true);
     // the repaired house with every switch on
     for (const id of SWITCH_IDS) { st.switchOn[id] = true; house.setSwitch(id, true); }
     const sol = solve({ parts: healthyHouse() });
@@ -194,6 +206,7 @@ export function mount(host: JobHost): JobInstance {
     roomRows.forEach((row) => { row.querySelector('.j12-state')!.textContent = 'On'; row.classList.add('is-on'); });
     house.view('lighting', 1.0);
     await sleep(1700);
+    cap.remove();
     if (disposed) return;
     host.finish(result);
   }

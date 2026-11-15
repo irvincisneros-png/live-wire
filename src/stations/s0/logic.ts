@@ -27,7 +27,7 @@ export const VOLTAGE_CORRECT = 1;
 
 export const SWITCH_OPTIONS = [
   'They drain out of the wire',
-  'They stop moving, but they stay in the wire',
+  'They stop drifting around the loop but stay in the wire. They still jiggle on the spot.',
   'The resistor uses them up',
   'They all rush back into the battery',
 ];
@@ -43,7 +43,7 @@ export const WORDS: Word[] = [
   { q: 'charge', name: 'Charge', sym: '', unit: '', line: 'The dots. They already fill every wire. They are never made and never used up. Each dot stands for a huge amount of charge.' },
   { q: 'current', name: 'Current', sym: 'I', unit: 'amps (A)', line: 'How many dots pass the counter gate each second.' },
   { q: 'voltage', name: 'Voltage', sym: 'V', unit: 'volts (V)', line: 'Always between two points: the change in glow (energy carried by each dot) from one point to the other.' },
-  { q: 'resistance', name: 'Resistance', sym: 'R', unit: 'ohms (Ω)', line: 'How hard it is for dots to get through: collisions with vibrating atoms. A thinner, longer or different metal has more.' },
+  { q: 'resistance', name: 'Resistance', sym: 'R', unit: 'ohms (Ω)', line: 'How hard it is for dots to get through: collisions with vibrating atoms. For the same material and temperature, a longer or thinner wire has more resistance. Different materials also have different resistance.' },
   { q: 'energy', name: 'Energy', sym: 'E', unit: 'joules (J)', line: 'The packets the resistor gives out as light and heat. They pile up.' },
   { q: 'power', name: 'Power', sym: 'P', unit: 'watts (W)', line: 'How fast the pile grows: joules each second.' },
 ];
@@ -52,6 +52,7 @@ export const LIMITS = [
   'Real charges drift very slowly, well under a millimetre each second. The dots here are sped up so you can see them.',
   'The energy really travels through the electric and magnetic fields around the wire. Dots carrying glow is a teaching model.',
   'The glow is an energy picture, not "the voltage of a dot". A voltage is always measured between two points.',
+  'The push travels around the circuit extremely fast, but not instantly.',
   'Mains power is AC: the charges jiggle back and forth 50 times a second. Live Wire treats every circuit as a steady flow.',
 ];
 

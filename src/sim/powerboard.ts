@@ -18,7 +18,7 @@ export interface BoardAppliance {
 }
 
 export const BOARD_APPLIANCES: readonly BoardAppliance[] = [
-  { id: 'heater', name: 'Room heater', powerW: 2400, group: 'main' },
+  { id: 'heater', name: 'Room heater', powerW: 2000, group: 'main' },
   { id: 'kettle', name: 'Kettle', powerW: 2200, group: 'main' },
   { id: 'toaster', name: 'Toaster', powerW: 900, group: 'main' },
   { id: 'iron', name: 'Iron', powerW: 1800, group: 'main' },
@@ -42,7 +42,7 @@ export function boardAppliance(id: string): BoardAppliance {
 /** Current of one appliance at 230 V in amps: I = P ÷ V. Example: kettle 2200 W gives 9.57 A. */
 export function applianceCurrent(id: string): number { return currentAt(boardAppliance(id).powerW, MAINS_V); }
 
-/** Total current of appliances all running together (parallel, so currents add), amps. Example: heater + kettle = 20.0 A. */
+/** Total current of appliances all running together (parallel, so currents add), amps. Example: heater + kettle = 18.3 A. */
 export function boardCurrent(applianceIds: string[]): number {
   return currentAt(applianceIds.reduce((s, id) => s + boardAppliance(id).powerW, 0), MAINS_V);
 }
@@ -77,6 +77,9 @@ export const EXPLANATION_OPTIONS: readonly string[] = [
   'Each appliance used up some of the charge in the wires.',
 ];
 export const EXPLANATION_CORRECT = 0;
+
+/** socket rating versus breaker rating, shown in Job 3 */
+export const SOCKET_VS_BREAKER = 'A power point is rated at 10 A. The breaker for the whole circuit is rated higher because it protects the cable that feeds several power points.';
 
 export interface PowerBoardInput {
   /** the student's current for each main appliance, amps (missing = not answered) */

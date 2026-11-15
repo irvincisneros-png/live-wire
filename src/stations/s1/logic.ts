@@ -101,7 +101,7 @@ export const FAULTS: Fault[] = [
     ],
     extraWires: 2,
     hint: 'Check where the globe’s two ends go. A complete circuit starts at one battery terminal and must come back to the <i>other</i> one. Does it?',
-    explain: 'Both ends of the globe branch joined the same battery terminal. Charge went out and came back to the same place, so it never crossed from one terminal to the other. The path must link the two different terminals.',
+    explain: 'Both ends of the globe join the same battery terminal, so there is no voltage across the globe and no current through it. The path must link the two different terminals.',
   },
 ];
 

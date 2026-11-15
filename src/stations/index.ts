@@ -38,7 +38,7 @@ export const STATIONS: StationDef[] = [
   },
   {
     id: 's7', num: 7, title: 'Sources', ticket: 'Sources', dotPoints: ['1.2.1', '1.2.2', '1.2.3'],
-    blurb: 'Follow the energy from coal, gas, water, wind and sun to the spinning generator.',
+    blurb: 'Follow the energy in coal, gas, hydro, wind and solar power, and find the one part most of them share.',
     load: () => import('./s7/index'),
   },
 ];

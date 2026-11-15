@@ -193,11 +193,11 @@ export function scoreFault(input: FaultInput): JobResult {
     { q: 'What is the fault?', a: input.answerKind ?? 'no answer', ok: kindOk },
     { q: 'Where is it?', a: input.answerPartId ? layout.parts[input.answerPartId]?.label ?? input.answerPartId : 'no answer', ok: exact },
     { q: 'A measurement that tells the fault apart', a: `${input.measurements.length} taken`, ok: useful },
-    { q: 'Why does a gap read the full voltage?', a: input.reasoning === null ? 'no answer' : REASONING_OPTIONS[input.reasoning] ?? 'no answer', ok: reasonOk },
+    { q: 'Why does a gap read almost the full voltage?', a: input.reasoning === null ? 'no answer' : REASONING_OPTIONS[input.reasoning] ?? 'no answer', ok: reasonOk },
   ];
   const lines: string[] = [];
   lines.push(kindOk && exact ? 'You named the fault and found it.' : exact ? 'You found the part but named the wrong kind of fault.' : sameRoom ? 'The right room, but not the right part. Measure across each part in that room.' : 'The fault is somewhere else. Measure across parts to find the gap.');
   lines.push(useful ? 'You took a measurement that told the fault apart.' : 'None of your measurements told the fault apart. Try a voltmeter across a part.');
-  lines.push(reasonOk ? 'You explained the full voltage across a gap.' : 'Across a gap the full supply voltage appears, because almost no current flows.');
+  lines.push(reasonOk ? 'You explained the voltage across a gap.' : 'With every other switch closed and one gap in this circuit, almost the full supply voltage appears across the gap, because almost no current flows.');
   return makeResult((kindOk ? 20 : 0) + (exact ? 30 : sameRoom ? 10 : 0) + (useful ? 25 : 0) + (reasonOk ? 25 : 0), lines, answers);
 }

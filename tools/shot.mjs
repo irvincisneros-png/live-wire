@@ -35,7 +35,7 @@ await sleep(Number(waitMs) + 3000);
 for (const s of ss) {
   await send('Runtime.evaluate', { expression: `location.hash = ${JSON.stringify('#' + s)}` });
   await sleep(Number(waitMs));
-  if (js) { const r = await send('Runtime.evaluate', { expression: js, awaitPromise: true }); if (r?.exceptionDetails) logs.push('EVAL ' + r.exceptionDetails.text); await sleep(1200); }
+  if (js) { const r = await send('Runtime.evaluate', { expression: js, awaitPromise: true }); if (r?.exceptionDetails) logs.push('EVAL ' + r.exceptionDetails.text); await sleep(Number(waitMs)); }
   const r = await send('Page.captureScreenshot', { format: 'jpeg', quality: 82 });
   writeFileSync(`${out}/${s.replace(/[^a-z0-9]+/gi, '_')}_${W}.jpg`, Buffer.from(r.data, 'base64'));
 }

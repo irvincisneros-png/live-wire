@@ -146,7 +146,7 @@ export function mount(host: StationHost): StationInstance {
       id: 'where-wasted', kind: 'choice',
       prompt: 'The thermal camera shows the incandescent globe glowing hot. What happens to this "wasted" energy?',
       options: WHERE_OPTIONS, correct: WHERE_CORRECT,
-      explain: 'Energy cannot be destroyed. The wasted energy spreads into the surroundings as heat, so it still exists but is too spread out to be useful.',
+      explain: 'Energy cannot be destroyed. The wasted energy spreads into the surroundings as heat, so it still exists, but it is not the light we wanted.',
     },
     {
       id: 'improve', kind: 'choice',

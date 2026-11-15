@@ -81,12 +81,12 @@ export const MEASURES: Measure[] = [
   {
     key: 'efficiency', label: 'Conversion efficiency', unit: '%', best: 'high',
     value: (s) => midpoint(s.efficiencyPct), text: (s) => range(s.efficiencyPct, ' %'),
-    def: 'How much of the energy in the fuel, water, wind or sunlight becomes electricity. The rest is wasted, mostly as heat.',
+    def: 'How much of the energy in the fuel, water, wind or sunlight becomes electricity. Energy that is not converted stays in the surroundings, for example as moving air, reflected light or heat.',
   },
   {
     key: 'capacity', label: 'Capacity factor', unit: '%', best: 'high',
     value: (s) => midpoint(s.capacityFactorPct), text: (s) => range(s.capacityFactorPct, ' %'),
-    def: 'How much electricity a plant makes in a year, compared with running flat out all year. Low if it often has no wind or sun, or is only switched on at busy times.',
+    def: 'The energy a plant really produces in a year as a fraction of what it would produce running at full power all year. Low if it often has no wind or sun, or is only run at busy times.',
   },
   {
     key: 'cost', label: 'Cost of new power', unit: 'band', best: 'low',
@@ -167,7 +167,7 @@ export function tableQuestion(): ChoiceQ {
   return {
     prompt: `Use the comparison table. Which source has the highest ${m.label.toLowerCase()}?`,
     options, correct: SOURCES.indexOf(top),
-    explain: `${top.name} has a capacity factor of about ${m.text(top)}, the highest of the five. That means it makes power for more of the year. It says nothing about how efficient it is (${measureByKey('efficiency').text(top)}).`,
+    explain: `${top.name} has a capacity factor of about ${m.text(top)}, the highest of the five. That means its yearly output is a larger fraction of what it would produce at full power all year. It says nothing about how efficient it is (${measureByKey('efficiency').text(top)}).`,
   };
 }
 

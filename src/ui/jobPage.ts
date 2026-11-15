@@ -89,6 +89,8 @@ export function mountJobPage(root: HTMLElement, def: JobDef, ctx: Ctx): PageHand
       if (disposed || my !== attempt) { try { inst.dispose(); } catch { /* ignore */ } return; }
       instance = inst;
       hideOverlay(ws);
+      // jobs are worked from the panel, so on phones start with the sheet open
+      try { if (matchMedia('(max-width: 899px)').matches) ws.setSheetOpen(true); } catch { /* ignore */ }
     } catch (e) {
       console.error(e);
       if (disposed) return;

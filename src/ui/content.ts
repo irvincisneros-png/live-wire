@@ -4,6 +4,9 @@ export const HUB_URL = 'https://irvincisneros-png.github.io/';
 export const SAFETY_MESSAGE =
   'Real house wiring is 230 V and can kill. In Australia it must only be done by a licensed electrician. That is why apprentices train on a 12 V board first.';
 
+export const SAFETY_SIMPLIFIED =
+  'This check is simplified for the training wall. It does not prove real wiring is safe. Never test or work on mains wiring.';
+
 export const MODEL_LIMITS =
   'Real charges drift along a wire at well under a millimetre per second. The energy actually travels through the electric and magnetic fields around the wire. Dots carrying packets of energy is a teaching model. Mains power is AC, where charges jiggle back and forth 50 times a second. Live Wire treats it as steady flow.';
 

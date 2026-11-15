@@ -103,7 +103,7 @@ export function mount(host: StationHost): StationInstance {
   // ───────── guided steps ─────────
   const steps: CoachStep[] = [
     {
-      text: 'The dots are charges, and they already fill the whole wire. <b>Close the switch</b> and watch every dot start moving at once.',
+      text: 'The dots are charges, and they already fill the whole wire. <b>Close the switch</b> and watch the dots start moving almost straight away, all around the loop.',
       done: () => lens.input.closed,
     },
     {
@@ -153,7 +153,7 @@ export function mount(host: StationHost): StationInstance {
       id: 'switch-open', kind: 'choice',
       prompt: 'You open the switch. What happens to the dots?',
       options: SWITCH_OPTIONS, correct: SWITCH_CORRECT,
-      explain: 'Charge is never used up. The dots were in the wire all along. Opening the switch stops them moving, so the current becomes zero.',
+      explain: 'Charge is never used up. The dots were in the wire all along. Opening the switch stops them drifting around the loop, so the current becomes zero. They still jiggle on the spot.',
       onStart: () => { lens.focus('overview'); },
     },
     {
