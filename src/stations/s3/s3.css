@@ -1,0 +1,28 @@
+.s3-side { display: flex; flex-direction: column; gap: 12px; }
+.s3-tabs { display: flex; gap: 6px; }
+.s3-tab { flex: 1; min-height: 44px; border-radius: 10px; border: 1px solid var(--lw-line); background: var(--lw-panel2); color: var(--lw-ink); font: inherit; font-weight: 700; cursor: pointer; }
+.s3-tab[aria-selected="true"] { background: var(--lw-accent); color: var(--lw-accent-ink); border-color: var(--lw-accent); }
+.s3-tab:focus-visible, .s3-gap:focus-visible { outline: 3px solid var(--lw-focus); outline-offset: 2px; }
+.s3-block { background: var(--lw-panel2); border: 1px solid var(--lw-line); border-radius: var(--lw-radius); padding: 10px 12px; }
+.s3-block h3 { margin: 0 0 6px; font-size: .95rem; }
+.s3-gaps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.s3-gaps p { flex: 1 1 100%; margin: 0 0 2px; font-size: .85rem; color: var(--lw-muted); }
+.s3-gap { min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px dashed var(--lw-muted); background: transparent; color: var(--lw-ink); font: inherit; font-size: .9rem; cursor: pointer; }
+.s3-gap[aria-pressed="true"] { border-style: solid; border-color: var(--lw-accent); background: rgba(224,166,58,.16); }
+.s3-gap:disabled { opacity: .45; cursor: not-allowed; }
+.s3-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.s3-table th, .s3-table td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--lw-line); }
+.s3-table th { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--lw-muted); }
+.s3-table td.s3-val { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; text-align: right; }
+.s3-table th:last-child { text-align: right; }
+.s3-table tr.is-live td:first-child::before { content: '\25CF\00a0'; color: var(--lw-good); }
+.s3-table tr:last-child td { border-bottom: 0; }
+.s3-live { color: var(--lw-muted); font-weight: 600; font-style: italic; }
+.s3-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.s3-sum { margin: 8px 0 0; padding: 0; list-style: none; font-size: .88rem; display: flex; flex-direction: column; gap: 4px; }
+.s3-sum li { padding-left: 1.4em; position: relative; }
+.s3-sum li::before { content: '\2713'; position: absolute; left: 0; color: var(--lw-good); font-weight: 700; }
+.s3-sum li.is-off::before { content: '!'; color: var(--lw-bad); }
+.s3-note { font-size: .88rem; margin: 0; }
+.s3-diagram summary { cursor: pointer; font-weight: 700; min-height: 40px; display: flex; align-items: center; }
+.s3-diagram svg { width: 100%; height: auto; max-height: 240px; }
