@@ -74,7 +74,7 @@ export function woodMaps(variant: 'bench' | 'dark' = 'bench'): WoodMaps {
       // tileable in x: sample noise on a circle (radius sets how fast the grain wanders along the board)
       const nx = Math.cos(u) * 1.6, nz = Math.sin(u) * 1.6;
       const warp = fbm(nx + y * 0.004, nz + y * 0.003, 3, seed) * 0.9 + fbm(nx * 3, nz * 3 + y * 0.01, 2, seed + 1) * 0.25;
-      const rings = (y / H) * 15 + warp * 1.1 + fbm(nx * 2, nz * 2 + y * 0.02, 2, seed + 5) * 0.5;
+      const rings = (y / H) * 22 + warp * 0.5 + fbm(nx * 1.2, nz * 1.2 + y * 0.01, 2, seed + 5) * 0.3;
       // smooth periodic ring profile (no hard edges): narrow dark latewood band, wide earlywood
       const g = Math.pow(0.5 + 0.5 * Math.sin(rings * Math.PI * 2), 2.2) * 0.6;
       // long thin pore streaks along the grain
