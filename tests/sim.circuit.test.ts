@@ -72,7 +72,7 @@ describe('solver', () => {
     const parts: Part[] = [{ id: 'B', kind: 'battery', a: 0, b: 1, emf: 9 }, res('R1', 1, 2, 22), res('R2', 2, 0, 47), res('R3', 2, 0, 33), wire('W', 1, 3), res('R4', 3, 0, 68)];
     const s = solve({ parts });
     const out = parts.filter((p) => p.kind !== 'battery').reduce((t, p) => t + s.parts[p.id].power, 0);
-    const lostInside = s.parts.B.current ** 2 * 0.005;
+    const lostInside = s.parts.B.current ** 2 * 0.001;
     expect(s.parts.B.power).toBeCloseTo(out + lostInside, 6);
   });
 });

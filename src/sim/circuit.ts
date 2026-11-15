@@ -1,10 +1,10 @@
 // DC circuit solver: nodal analysis, one connected island at a time. Pure; no DOM, no three.
 import type { Circuit, Part, PartResult, Solution } from '../types';
 
-export const WIRE_OHMS = 1e-4;
-export const AMMETER_OHMS = 1e-4;
+export const WIRE_OHMS = 1e-5;
+export const AMMETER_OHMS = 1e-5;
 export const VOLTMETER_OHMS = 1e7;
-export const BATTERY_RINT = 0.005;
+export const BATTERY_RINT = 0.001;
 /** battery current above this is treated as a short circuit */
 export const SHORT_LIMIT_A = 10;
 /** a globe above this multiple of its rated power is overloaded */

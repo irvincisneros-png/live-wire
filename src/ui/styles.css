@@ -474,3 +474,7 @@ h1:focus { outline: none; }
   .q-current, .q-voltage, .q-resistance, .q-energy, .q-power { color: #111; }
   .lw-card, .lw-jobcard { background: #fff; box-shadow: none; }
 }
+
+/* X-ray toggle added by stations/benchCommon.ts */
+.lw-xray-btn { position: absolute; right: 12px; top: 58px; z-index: 5; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22); background: rgba(20,22,28,.78); color: #fff; font: 600 14px/1 inherit; cursor: pointer; backdrop-filter: blur(8px); }
+.lw-xray-btn[aria-pressed="true"] { background: #F0E442; color: #14161c; border-color: #F0E442; box-shadow: 0 0 18px rgba(240,228,66,.45); }
