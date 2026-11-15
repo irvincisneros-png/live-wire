@@ -85,7 +85,7 @@ export function createFlow(parent: THREE.Object3D, renderer: THREE.WebGLRenderer
   const uPx = { value: 800 };
   const dotMat = new THREE.ShaderMaterial({
     vertexShader: DOT_VS, fragmentShader: DOT_FS,
-    uniforms: { uSize: { value: quality === 'low' ? 0.06 : 0.05 }, uPx, uBoost: { value: quality === 'low' ? 1.4 : 1 } },
+    uniforms: { uSize: { value: quality === 'low' ? 0.085 : 0.074 }, uPx, uBoost: { value: quality === 'low' ? 1.4 : 1 } },
     transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
   });
   const dots = new THREE.Points(geo, dotMat);

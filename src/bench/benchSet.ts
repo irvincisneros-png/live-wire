@@ -181,9 +181,9 @@ export function createBenchSet(g: GridSize, quality: QualityTier): BenchSet {
   const root = new THREE.Group();
   root.name = 'benchSet';
   const panelW = g.cols - 1 + 1.15, panelD = g.rows - 1 + 1.15;
-  const benchW = Math.max(10, panelW + 5), benchD = Math.max(6.4, panelD + 3);
+  const benchW = Math.max(10, panelW + 5), benchD = Math.max(11, panelD + 7.6);
   // the bench top sits a little forward so there is room in front for meters
-  const benchZ = 0.55;
+  const benchZ = benchD / 2 - 2.65; // back edge stays put; the top runs well forward so phones never see past its front edge
   const thick = 0.3;
   const nPlanks = Math.round(benchD / 0.8);
   const pd = benchD / nPlanks;
