@@ -86,7 +86,7 @@
 
 /* parts list */
 .lw-bench .lw-partslist {
-  position: absolute; top: 10px; left: 10px; max-width: min(340px, calc(100% - 20px)); max-height: calc(100% - 120px); overflow: auto;
+  position: absolute; top: 106px; right: 10px; max-width: min(340px, calc(100% - 20px)); max-height: calc(100% - 230px); overflow: auto;
   background: var(--_panel); border: 1px solid var(--_line); border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
